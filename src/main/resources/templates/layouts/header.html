@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/master}">
+<head></head>
+<body>
+	<div layout:fragment="page">
+
+		<!-- Header Goes Here -->
+		<!-- Nav Menu -->
+	    <div class="nav-menu fixed-top">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-md-12">
+	                    <nav class="navbar navbar-dark navbar-expand-lg">
+	                        <a class="navbar-brand" href="#"><img width="75px" height="75px" src="/img/LIT-01.png" class="img-fluid" alt="logo"></a> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+	                        <div class="collapse navbar-collapse" id="navbar">
+	                            <ul class="navbar-nav ml-auto">
+	                                <li class="nav-item"> <a class="nav-link active" href="#home">HOME <span class="sr-only">(current)</span></a> </li>
+	                                <li class="nav-item"> <a class="nav-link" href="#features">FEATURES</a> </li>
+	                                <li class="nav-item"> <a class="nav-link" href="#gallery">GALLERY</a> </li>
+	                                <li class="nav-item"> <a class="nav-link" href="#pricing">PRICING</a> </li>
+	                                <li class="nav-item"> <a class="nav-link" href="#FAQ">FAQ</a> </li>
+	                                <li class="nav-item"> <a class="nav-link" href="#contact">CONTACT</a> </li>
+	                                <li class="nav-item"><a href="#download" class="btn btn-outline-light my-3 my-sm-0 ml-lg-3">Download</a></li>
+	                            </ul>
+	                        </div>
+	                    </nav>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+		<div layout:fragment="content"></div>
+		
+		<!-- Footer Goes Here -->
+		<!-- // end .section -->
+	    <footer class="my-5 text-center">
+	        <!-- Copyright removal is not prohibited! -->
+	        <p class="mb-2"><small>COPYRIGHT © 2017. ALL RIGHTS RESERVED.</small></p>
+	
+	        <small>
+	            <a href="#" class="m-2">PRESS</a>
+	            <a href="#" class="m-2">TERMS</a>
+	            <a href="#" class="m-2">PRIVACY</a>
+	        </small>
+	    </footer>
+		
+		<!-- jQuery and Bootstrap -->
+	    <script src="js/jquery-3.2.1.min.js"></script>
+	    <script src="js/bootstrap.bundle.min.js"></script>
+	    <!-- Plugins JS -->
+	    <script src="js/owl.carousel.min.js"></script>
+	    <!-- Custom JS -->
+	    <script src="js/script.js"></script>
+	</div>
+</body>
+</html>

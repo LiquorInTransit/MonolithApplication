@@ -1,0 +1,112 @@
+server:
+  port: 8080
+  session:
+    timeout: 10
+logging:
+  file: log.log
+  level:
+    com:
+      netflix:
+        discovery:
+          internal:
+            util:
+              Archaius1Utils: ERROR
+          endpoint:
+            EndpointUtils: ERROR
+          shared:
+            resolver:
+              aws:
+                ConfigClusterResolver: ERROR
+    org:
+      springframework:
+        cloud:
+          config:
+            client:
+              ConfigServicePropertySourceLocator: ERROR
+spring:
+  webservices:
+    servlet:
+      load-on-startup: 1
+  datasource:
+    name: test
+    url: jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8
+    username: SA
+    password: 
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.HSQLDialect
+    hibernate:
+      naming.implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+      ddl-auto: create
+    show-sql: true
+    
+security:
+  basic:
+    enabled: false
+  user:
+    name: admin
+    password: admin
+    role: ACTUATOR
+  oauth2:
+    resource:
+      jwt:
+        key-value: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0DsrJige51wEhIDatvnq
+          zGlrb+HGZmUCB7UxxoP7m+humK6paRilkpKKXoJeiwrYz2Cx9dLG1Q0IxtOlxPU4
+          RsCjFw3N8hrmuw+R8Fn6d0wAXUFR3EjoyiNaGK++2RaTEsbzK1A1/ea6DKH1UuFB
+          +NL1BQacKtQH3mwe/7ot9uW1axKwb28cqxHBYwxIdK8gQumCrLdwd9d+ZFn6j+7z
+          9VszKolOnmkeo1bOFNGBJ2Vf4b6XQc/uukpSDmV2l2pLMQ/DVLWvU/cl9Wd7S8CQ
+          pIQiKzmnKlbvM18EVDZwb0vcXZenT5yGHZ3GHXEJDzChnRbQtQOjvUvKzPnoBzGx
+          7wIDAQAB
+          -----END PUBLIC KEY-----
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 10000
+ribbon:
+  OkToRetryOnAllOperations: true
+  MaxAutoRetries: 2
+  MaxAutoRetriesNextServer: 2
+  ConnectionTimeout: 3000
+  ReadTimeout: 10000
+            
+management:
+  contextPath: /mgmt
+  security:
+    enabled: true
+    roles: ACTUATOR
+    
+endpoints:
+  enabled: false
+  shutdown.enabled: true
+  health.enabled: true
+  info.enabled: true
+  logfile.enabled: true
+  loggers.enabled: true
+  metrics.enabled: true
+  trace.enabled: true
+  
+lcbo-client:
+  key: MDo1NDQwN2RjYy0wMDhkLTExZTctYWEwNy0yMzI4NjgxOTRjOWU6V2hSaDdoOXBVbjFjTU80cUtBZlpxRkI4UlJDVWcxRWlBUWZZ
+  
+imgur:
+  oauth2:
+    resource:
+      access-token-uri: https://api.imgur.com/oauth2/token
+      grantType: password
+      clientId: 30c968b8bef59b4
+      clientSecret: 5ab2b7483e46068e8c5178d2da4ac010a008db44
+      username: LiquorInTransit
+      password: hbBmCGk5!
+      
+stripe:
+  secret-key: sk_test_U0Y1OZCoDGrpLibNXdRcf6vO
+  public-key: pk_test_gLfcfVLI76W77BncajD81v4w

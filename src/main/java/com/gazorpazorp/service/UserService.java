@@ -3,7 +3,6 @@ package com.gazorpazorp.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -24,14 +23,9 @@ public class UserService {
 	}
 	public User updateUser(Long id, UserInfoUpdateDto userInfo) {
 			User user = getUserById(id);
-//			if (email != null) user.setEmail(email);
-//			//if (phone != null) user.setPhoneNumber(phone);TODO: add a phone number option. verify correct phone format and is not taken.
-//			if (password != null) user.setPassword(new BCryptPasswordEncoder().encode(password)); //consider only accepting a pre-encoded password
 			userInfo.incorporate(user);
 			return userRepo.save(user);
 	}
-	
-
 	
 	public User create(User user) {
 		User existing = userRepo.findByEmail(user.getEmail());

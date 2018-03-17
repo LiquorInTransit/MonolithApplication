@@ -1,32 +1,35 @@
-package com.gazorpazorp.AuthenticationService;
+package com.gazorpazorp.LITMonolith;
 
 import java.util.Arrays;
 
+import javax.annotation.PostConstruct;
+
+import org.hsqldb.util.DatabaseManagerSwing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -37,32 +40,25 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import com.gazorpazorp.service.LITUserDetailsService;
-import com.netflix.appinfo.AmazonInfo;
 
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
 @EntityScan(basePackages="com.gazorpazorp")
-@EnableDiscoveryClient
-public class LITAuthApplication {
-
-	//@Profile("!test")
-//	@Configuration
-//	@EnableDiscoveryClient
-//	public static class EurekaClientConfiguration {		
-//	}
+@EnableFeignClients("com.gazorpazorp.client")
+public class LITMonolithApplication {
 	
-//	@PostConstruct
-//	public void getDbManager(){
-//	   DatabaseManagerSwing.main(
-//		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test", "--user", "SA", "--password", ""});
-//	}
+	@PostConstruct
+	public void getDbManager(){
+	   DatabaseManagerSwing.main(
+		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8", "--user", "SA", "--password", ""});
+	}
 
 
 	@Autowired
 	LITUserDetailsService userDetailsService;
 
 	public static void main(String[] args) {
-		SpringApplication.run(LITAuthApplication.class, args);
+		SpringApplication.run(LITMonolithApplication.class, args);
 	}
 	@Autowired
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
@@ -186,44 +182,53 @@ public class LITAuthApplication {
 	        };
 	    }
 	}	
-//	@Component
-//	@Qualifier("customTokenEnhancer")
-//	public static class CustomTokenEnhancer implements TokenEnhancer {
-//		@Autowired
-//		UserService userService;
-//		@Override
-//		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-//			Map<String, Object> additionalInfo = new HashMap<>();
-//			additionalInfo.put("user_id", userService.getUserByUsername(authentication.getUserAuthentication().getName()).getId());
-//			((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
-//	        return accessToken;
-//		}
-//	}
 	
-	@Bean
-	@Profile("!dev")
-	public EurekaInstanceConfigBean eurekaInstanceConfigBean(InetUtils utils) 
-	{
-//		EurekaInstanceConfigBean instance = new EurekaInstanceConfigBean(utils);
-		final EurekaInstanceConfigBean instance = new EurekaInstanceConfigBean(utils)
-		{
-			@Scheduled(initialDelay = 30000L, fixedRate = 30000L)
-			public void refreshInfo() {
-				AmazonInfo newInfo = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
-				if (!this.getDataCenterInfo().equals(newInfo)) {
-					((AmazonInfo) this.getDataCenterInfo()).setMetadata(newInfo.getMetadata());
-					this.setHostname(newInfo.get(AmazonInfo.MetaDataKey.publicHostname));
-					this.setIpAddress(newInfo.get(AmazonInfo.MetaDataKey.publicIpv4));
-					this.setDataCenterInfo(newInfo);
-					this.setNonSecurePort(8080);
-				}
-			}         
-		};
-		AmazonInfo info = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
-		instance.setHostname(info.get(AmazonInfo.MetaDataKey.publicHostname));
-		instance.setIpAddress(info.get(AmazonInfo.MetaDataKey.publicIpv4));
-		instance.setDataCenterInfo(info);
-		instance.setNonSecurePort(8080);
-		return instance;
+	@Configuration
+	@EnableResourceServer
+	protected static class ResourceConfig extends ResourceServerConfigurerAdapter {
+
+		@Override
+		public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+			// TODO Auto-generated method stub
+			super.configure(resources);
+		}
+
+		@Override
+		public void configure(HttpSecurity http) throws Exception {
+			// TODO Auto-generated method stub
+			
+			http.authorizeRequests().antMatchers("/api/**").fullyAuthenticated();
+			http.authorizeRequests().antMatchers("/**").permitAll();
+			
+			super.configure(http);
+		}
+		
 	}
+	
+//	@Bean
+//	@Profile("!dev")
+//	public EurekaInstanceConfigBean eurekaInstanceConfigBean(InetUtils utils) 
+//	{
+////		EurekaInstanceConfigBean instance = new EurekaInstanceConfigBean(utils);
+//		final EurekaInstanceConfigBean instance = new EurekaInstanceConfigBean(utils)
+//		{
+//			@Scheduled(initialDelay = 30000L, fixedRate = 30000L)
+//			public void refreshInfo() {
+//				AmazonInfo newInfo = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
+//				if (!this.getDataCenterInfo().equals(newInfo)) {
+//					((AmazonInfo) this.getDataCenterInfo()).setMetadata(newInfo.getMetadata());
+//					this.setHostname(newInfo.get(AmazonInfo.MetaDataKey.publicHostname));
+//					this.setIpAddress(newInfo.get(AmazonInfo.MetaDataKey.publicIpv4));
+//					this.setDataCenterInfo(newInfo);
+//					this.setNonSecurePort(8080);
+//				}
+//			}         
+//		};
+//		AmazonInfo info = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
+//		instance.setHostname(info.get(AmazonInfo.MetaDataKey.publicHostname));
+//		instance.setIpAddress(info.get(AmazonInfo.MetaDataKey.publicIpv4));
+//		instance.setDataCenterInfo(info);
+//		instance.setNonSecurePort(8080);
+//		return instance;
+//	}
 }
