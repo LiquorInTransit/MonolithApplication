@@ -110,3 +110,14 @@ imgur:
 stripe:
   secret-key: sk_test_U0Y1OZCoDGrpLibNXdRcf6vO
   public-key: pk_test_gLfcfVLI76W77BncajD81v4w
+
+
+--- 
+  
+spring:
+  profiles: dev
+  datasource:
+    platform: dev
+    name: test
+  
+  

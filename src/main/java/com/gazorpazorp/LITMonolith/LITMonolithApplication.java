@@ -15,10 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,12 +42,16 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import com.gazorpazorp.model.Product;
 import com.gazorpazorp.service.LITUserDetailsService;
+import com.gazorpazorp.service.ProductRepositoryCreationService;
+import com.gazorpazorp.service.ProductRepositoryUpdateService;
 
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
 @EntityScan(basePackages="com.gazorpazorp")
 @EnableFeignClients("com.gazorpazorp.client")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LITMonolithApplication {
 	
 	@PostConstruct
@@ -60,6 +67,27 @@ public class LITMonolithApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LITMonolithApplication.class, args);
 	}
+	
+	//Product and Store Utilities
+	@Autowired
+	ProductRepositoryCreationService PRCService;
+	
+	@PostConstruct
+	public void getProducts() {
+		PRCService.start();
+	}
+	@Configuration
+	public static class RepositoryConfig extends RepositoryRestConfigurerAdapter {
+	    @Override
+		public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+	        config.exposeIdsFor(Product.class);
+	        config.setBasePath("api");
+	    }
+	}
+	
+	
+	
+	
 	@Autowired
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
