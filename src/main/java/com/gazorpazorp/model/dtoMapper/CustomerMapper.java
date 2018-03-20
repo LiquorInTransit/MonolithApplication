@@ -21,14 +21,14 @@ public interface CustomerMapper {
 	@Mapping(source="customer.profileImageId", target="profileImageUrl")
 	CustomerDetailsDto customerAndUserToCustomerDetailsDto(Customer customer, User user);
 	
-	@Mapping(source="userId", target="id")
-	@Mapping(target="firstName")
-	@Mapping(target="lastName")
-	@Mapping(target="email")
-	@Mapping(target="phone")
-	User customerDetailsDtoToUser(CustomerDetailsDto dto, Long userId);
+//	@Mapping(source="userId", target="id")
+//	@Mapping(target="firstName")
+//	@Mapping(target="lastName")
+//	@Mapping(target="email")
+//	@Mapping(target="phone")
+//	User customerDetailsDtoToUser(CustomerDetailsDto dto, Long userId);
 	
-	@Mapping(source="dto.id", target="id")
-	@Mapping(source="userId", target="userId")
-	Customer customerDetailsDtoToCustomer(CustomerDetailsDto dto, Long userId);
+//	@Mapping(source="dto.id", target="id")
+//	@Mapping(source="userId", target="userId")
+//	Customer customerDetailsDtoToCustomer(CustomerDetailsDto dto, Long userId);
 }

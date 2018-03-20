@@ -1,5 +1,6 @@
 package com.gazorpazorp.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class MeService {
 		Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 		CustomerDetailsDto dto = CustomerMapper.INSTANCE.customerAndUserToCustomerDetailsDto(customerService.getCurrentCustomer(), userService.getUserById(id));
 		String imageUrl = dto.getProfileImageUrl();
-		if (imageUrl == null || imageUrl.isEmpty())
+		if (StringUtils.isBlank(imageUrl))
 			dto.setProfileImageUrl(IMGUR_URL+IMGUR_DEFAULT_IMAGE);
 		else
 			dto.setProfileImageUrl(IMGUR_URL+dto.getProfileImageUrl()+".jpg");
@@ -38,7 +39,7 @@ public class MeService {
 		Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 		DriverDetailsDto dto = DriverMapper.INSTANCE.driverAndUserToDriverDetailsDto(driverService.getCurrentDriver(), userService.getUserById(id));
 		String imageUrl = dto.getProfileImageUrl();
-		if (imageUrl == null || imageUrl.isEmpty())
+		if (StringUtils.isBlank(imageUrl))
 			dto.setProfileImageUrl(IMGUR_URL+IMGUR_DEFAULT_IMAGE);
 		else
 			dto.setProfileImageUrl(IMGUR_URL+dto.getProfileImageUrl()+".jpg");

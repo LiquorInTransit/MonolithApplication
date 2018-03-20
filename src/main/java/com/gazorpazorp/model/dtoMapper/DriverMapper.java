@@ -23,15 +23,15 @@ public interface DriverMapper {
 	@Mapping(source="driver.profileImageId", target="profileImageUrl")
 	DriverDetailsDto driverAndUserToDriverDetailsDto(Driver driver, User user);
 	
-	@Mapping(source="userId", target="id")
-	@Mapping(target="firstName")
-	@Mapping(target="lastName")
-	@Mapping(target="email")
-	@Mapping(target="phone")
-	User driverDetailsDtoToUser(DriverDetailsDto dto, Long userId);
-	
-	@Mapping(source="dto.id", target="id")
-	@Mapping(source="userId", target="userId")
-	@Mapping(source="dto.car", target="car")
-	Driver driverDetailsDtoToDriver(DriverDetailsDto dto, Long userId);
+//	@Mapping(source="userId", target="id")
+//	@Mapping(target="firstName")
+//	@Mapping(target="lastName")
+//	@Mapping(target="email")
+//	@Mapping(target="phone")
+//	User driverDetailsDtoToUser(DriverDetailsDto dto, Long userId);
+//	
+//	@Mapping(source="dto.id", target="id")
+//	@Mapping(source="userId", target="userId")
+//	@Mapping(source="dto.car", target="car")
+//	Driver driverDetailsDtoToDriver(DriverDetailsDto dto, Long userId);
 }
