@@ -31,11 +31,9 @@ public class CustomerService {
 	
 	private final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 	
-	//use the userClietn to get the user, adn put everything to gether into a CustomerMeDto
 	public Customer getCurrentCustomer () {
 		Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 		Customer customer = customerRepo.findByUserId(id);
-//		logger.error("These are the are the customer's current coordinates: " + customer.getLocation().getLatitude()+", "+customer.getLocation().getLongitude());
 		return customer;
 	}
 	

@@ -9,101 +9,37 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Table(name = "CUSTOMER")
 public class Customer {
-
-	private Long id;
-	private Long userId;
-	private String paymentMethod;	
-	@Embedded
-	private Location location;
-	private String profileImageId;
-	private String stripeId;
-	
-	public Customer() {}
-	
-
-	public Customer(Long userId) {
-		super();
-		this.userId = userId;
-	}
-
 
 	@Id
 	@GenericGenerator(name = "incrementGenerator", strategy = "org.hibernate.id.IncrementGenerator")
 	@GeneratedValue(generator="incrementGenerator")
 	@Column(name = "id", length = 20)
-	public Long getId() {
-		return this.id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
+	private Long id;
 	@Column(name = "user_id", length = 20)
-	public Long getUserId() {
-		return userId;
-	}
-	public void setUserId(Long userId) {
+	private Long userId;
+	@Column(name = "payment_method", length = 255)
+	private String paymentMethod;	
+	@Embedded
+	private Location location;
+	@Column(name="profile_image_id")
+	private String profileImageId;
+	@Column(name="stripe_id")
+	private String stripeId;
+	
+	public Customer(Long userId) {
+		super();
 		this.userId = userId;
 	}
-	
-//	public Double getLatitude() {
-//		return latitude;
-//	}
-//	public void setLatitude(Double latitude) {
-//		this.latitude = latitude;
-//	}
-//
-//	public Double getLongitude() {
-//		return longitude;
-//	}
-//	public void setLongitude(Double longitude) {
-//		this.longitude = longitude;
-//	}
-//
-//
-//	@Column(name = "address", length = 255)
-//	public String getAddress() {
-//		return address;
-//	}
-//	public void setAddress(String address) {
-//		this.address = address;
-//	}
-
-	@Column(name = "payment_method", length = 255)
-	public String getPaymentMethod() {
-		return paymentMethod;
-	}
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
-
-
-	public Location getLocation() {
-		return location;
-	}
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	@Column(name="profile_image_id")
-	public String getProfileImageId() {
-		return profileImageId;
-	}
-	public void setProfileImageId(String profileImageId) {
-		this.profileImageId = profileImageId;
-	}
-	@Column(name="stripe_id")
-	public String getStripeId() {
-		return stripeId;
-	}
-	public void setStripeId(String stripeId) {
-		this.stripeId = stripeId;
-	}
-	
-	
-	
-	
 }
