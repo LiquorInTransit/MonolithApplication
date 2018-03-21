@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 
-import org.hsqldb.util.DatabaseManagerSwing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,7 +44,6 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 import com.gazorpazorp.model.Product;
 import com.gazorpazorp.service.LITUserDetailsService;
 import com.gazorpazorp.service.ProductRepositoryCreationService;
-import com.gazorpazorp.service.ProductRepositoryUpdateService;
 
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
@@ -54,11 +52,11 @@ import com.gazorpazorp.service.ProductRepositoryUpdateService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LITMonolithApplication {
 	
-	@PostConstruct
-	public void getDbManager(){
-	   DatabaseManagerSwing.main(
-		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8", "--user", "SA", "--password", ""});
-	}
+//	@PostConstruct
+//	public void getDbManager(){
+//	   DatabaseManagerSwing.main(
+//		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8", "--user", "SA", "--password", ""});
+//	}
 
 
 	@Autowired

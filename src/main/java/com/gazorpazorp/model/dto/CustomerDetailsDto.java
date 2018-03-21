@@ -2,11 +2,9 @@ package com.gazorpazorp.model.dto;
 
 import com.gazorpazorp.model.Location;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CustomerDetailsDto {
 	private Long id;
 	private String firstName;

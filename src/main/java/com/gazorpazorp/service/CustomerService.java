@@ -21,7 +21,7 @@ import com.stripe.net.RequestOptions;
 public class CustomerService {
 
 	@Autowired
-	CustomerRepository customerRepo;
+	private CustomerRepository customerRepo;
 	
 	@Autowired
 	ImgurClient imgurClient;

@@ -4,19 +4,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class StoreListResult {
 
-	public StoreListResult() {}
-	
 	@JsonProperty("result")
 	public List<Store> result;
-
-	public List<Store> getResult() {
-		return result;
-	}
-	public void setResult(List<Store> result) {
-		this.result = result;
-	}
-	
-	
 }

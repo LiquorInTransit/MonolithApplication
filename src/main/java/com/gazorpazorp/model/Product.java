@@ -4,10 +4,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Table(name="product")
 public class Product {
 	///////////////////////////////////////
@@ -85,275 +96,11 @@ public class Product {
 	@JsonProperty("tertiary_category")
 	private String tertiaryCategory;
 	
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Boolean getIsDead() {
-		return isDead;
-	}
-
-	public void setIsDead(Boolean isDead) {
-		this.isDead = isDead;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-
-	public Boolean getIsDiscontinued() {
-		return isDiscontinued;
-	}
-
-	public void setIsDiscontinued(Boolean isDiscontinued) {
-		this.isDiscontinued = isDiscontinued;
-	}
-
-	public Long getPriceInCents() {
-		return (long) (priceInCents*1.029);
-	}
-
-	public void setPriceInCents(Long priceInCents) {
-		this.priceInCents = priceInCents;
-	}
-
-	public String getStockType() {
-		return stockType;
-	}
-
-	public void setStockType(String stockType) {
-		this.stockType = stockType;
-	}
-
-	public String getPrimaryCategory() {
-		return primaryCategory;
-	}
-
-	public void setPrimaryCategory(String primaryCategory) {
-		this.primaryCategory = primaryCategory;
-	}
-
-	public String getSecondaryCategory() {
-		return secondaryCategory;
-	}
-
-	public void setSecondaryCategory(String secondaryCategory) {
-		this.secondaryCategory = secondaryCategory;
-	}
-
-	public String getOrigin() {
-		return origin;
-	}
-
-	public void setOrigin(String origin) {
-		this.origin = origin;
-	}	
-
-	//TODO: Readd these
-	@Column(name="package")
-	public String getPackageType() {
-		return packageType;
-	}
-	public void setPackageType(String packageType) {
-		this.packageType = packageType;
-	}
-
-	public String getPackageUnitType() {
-		return packageUnitType;
-	}
-
-	public void setPackageUnitType(String packageUnitType) {
-		this.packageUnitType = packageUnitType;
-	}
-
-	public Long getPackageUnitVolumeInMilliliters() {
-		return packageUnitVolumeInMilliliters;
-	}
-
-	public void setPackageUnitVolumeInMilliliters(Long packageUnitVolumeInMilliliters) {
-		this.packageUnitVolumeInMilliliters = packageUnitVolumeInMilliliters;
-	}
-
-	public Long getTotalPackageUnits() {
-		return totalPackageUnits;
-	}
-
-	public void setTotalPackageUnits(Long totalPackageUnits) {
-		this.totalPackageUnits = totalPackageUnits;
-	}
-
-	public Long getVolumeInMilliliters() {
-		return volumeInMilliliters;
-	}
-
-	public void setVolumeInMilliliters(Long volumeInMilliliters) {
-		this.volumeInMilliliters = volumeInMilliliters;
-	}
-
-	public Long getAlcoholContent() {
-		return alcoholContent;
-	}
-
-	public void setAlcoholContent(Long alcoholContent) {
-		this.alcoholContent = alcoholContent;
-	}
-
-	public String getProducerName() {
-		return producerName;
-	}
-
-	public void setProducerName(String producerName) {
-		this.producerName = producerName;
-	}
-
-	public String getReleasedOn() {
-		return releasedOn;
-	}
-
-	public void setReleasedOn(String releasedOn) {
-		this.releasedOn = releasedOn;
-	}
-
-	public Boolean getIsSeasonal() {
-		return isSeasonal;
-	}
-
-	public void setIsSeasonal(Boolean isSeasonal) {
-		this.isSeasonal = isSeasonal;
-	}
-
-	public Boolean getIsVqa() {
-		return isVqa;
-	}
-
-	public void setIsVqa(Boolean isVqa) {
-		this.isVqa = isVqa;
-	}
-
-	public Boolean getIsOcb() {
-		return isOcb;
-	}
-
-	public void setIsOcb(Boolean isOcb) {
-		this.isOcb = isOcb;
-	}
-
-	public Boolean getIsKosher() {
-		return isKosher;
-	}
-
-	public void setIsKosher(Boolean isKosher) {
-		this.isKosher = isKosher;
-	}
-
+	@JsonIgnore
+	@Transient
+	private double price;
 	
-
-	public String getDescription() {
-		return description;
+	public void Incorporate() {
+		this.price = this.price/100.0*1.029;
 	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getServingSuggestion() {
-		return servingSuggestion;
-	}
-
-	public void setServingSuggestion(String servingSuggestion) {
-		this.servingSuggestion = servingSuggestion;
-	}
-
-	public String getTastingNote() {
-		return tastingNote;
-	}
-
-	public void setTastingNote(String tastingNote) {
-		this.tastingNote = tastingNote;
-	}
-
-	public String getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public String getImageThumbUrl() {
-		return imageThumbUrl;
-	}
-
-	public void setImageThumbUrl(String imageThumbUrl) {
-		this.imageThumbUrl = imageThumbUrl;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getVarietal() {
-		return varietal;
-	}
-
-	public void setVarietal(String varietal) {
-		this.varietal = varietal;
-	}
-
-	public String getStyle() {
-		return style;
-	}
-
-	public void setStyle(String style) {
-		this.style = style;
-	}
-
-	public String getTertiaryCategory() {
-		return tertiaryCategory;
-	}
-
-	public void setTertiaryCategory(String tertiaryCategory) {
-		this.tertiaryCategory = tertiaryCategory;
-	}
-
-	@Override
-	public String toString() {
-		return "Product [id=" + id + ", isDead=" + isDead + ", name=" + name + ", tags=" + tags + ", isDiscontinued="
-				+ isDiscontinued + ", priceInCents=" + priceInCents + ", stockType=" + stockType + ", primaryCategory="
-				+ primaryCategory + ", secondaryCategory=" + secondaryCategory + ", origin=" + origin
-				+ ", packageUnitType=" + packageUnitType + ", packageUnitVolumeInMilliliters="
-				+ packageUnitVolumeInMilliliters + ", totalPackageUnits=" + totalPackageUnits + ", volumeInMilliliters="
-				+ volumeInMilliliters + ", alcoholContent=" + alcoholContent + ", producerName=" + producerName
-				+ ", releasedOn=" + releasedOn + ", isSeasonal=" + isSeasonal + ", isVqa=" + isVqa + ", isOcb=" + isOcb
-				+ ", isKosher=" + isKosher + ", description=" + description + ", servingSuggestion=" + servingSuggestion
-				+ ", tastingNote=" + tastingNote + ", updatedAt=" + updatedAt + ", imageThumbUrl=" + imageThumbUrl
-				+ ", imageUrl=" + imageUrl + ", varietal=" + varietal + ", style=" + style + ", tertiaryCategory="
-				+ tertiaryCategory + "]";
-	}
-
-	
-
-
-	
 }

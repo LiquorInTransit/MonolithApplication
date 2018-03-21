@@ -1,15 +1,13 @@
 package com.gazorpazorp.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class StoreResult {
 
 	private Store result;
-
-	public Store getResult() {
-		return result;
-	}
-	public void setResult(Store result) {
-		this.result = result;
-	}
-	
-	
 }
