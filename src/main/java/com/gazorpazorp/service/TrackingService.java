@@ -29,6 +29,8 @@ public class TrackingService {
 	CustomerService customerService;
 	@Autowired
 	DriverService driverService;
+	@Autowired
+	QuoteService quoteService;
 	
 	@Transactional(readOnly=false)
 	public DeliveryTracking getTrackingInfoById(UUID trackingId) throws Exception {
@@ -48,7 +50,7 @@ public class TrackingService {
 		return dt;
 	}
 	
-	public String createDeliveryTracking (Long deliveryId) throws Exception {
+	public UUID createDeliveryTracking (Long deliveryId) throws Exception {
 		DeliveryTracking tracking = deliveryTrackingRepo.findByDeliveryId(deliveryId).orElse(null);
 		if (tracking == null) {
 			DeliveryTracking dt = new DeliveryTracking();
@@ -60,7 +62,7 @@ public class TrackingService {
 			ev.setTrackingEventType(TrackingEventType.AWAITING_ACCEPTANCE);
 			ev.setDeliveryTracking(dt);
 			trackingEventRepo.save(ev);
-			return /*"www.liquorintransit.party/api/tracking/"+*/dt.getId().toString();
+			return /*"www.liquorintransit.party/api/tracking/"+*/dt.getId();
 		} else {
 			throw new Exception ("Tracking for this delivery has already begun");
 		}
@@ -109,7 +111,7 @@ public class TrackingService {
 		if (delivery==null || customer==null)
 			throw new Exception("Delivery or customer does not exist");
 		
-		return delivery.getDropoff().getCustomerId().equals(customer.getId());
+		return quoteService.getQuoteById(delivery.getQuoteId()).getDropoff().getCustomerId().equals(customer.getId());
 	}
 	public boolean verifyDriver(Long deliveryId) throws Exception {
 		Driver driver = getDriver();

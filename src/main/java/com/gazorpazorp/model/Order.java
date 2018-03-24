@@ -3,6 +3,7 @@ package com.gazorpazorp.model;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,8 +48,7 @@ public class Order {
 	private Set<LineItem> items;
 	@Column(name = "created_at")
 	private Timestamp createdAt;
-	@Transient
-	private String trackingURL;
+
 	
 	@PrePersist
 	void onCreate() {

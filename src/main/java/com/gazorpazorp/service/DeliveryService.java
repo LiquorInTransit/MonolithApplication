@@ -33,7 +33,7 @@ public class DeliveryService {
 	Logger logger = LoggerFactory.getLogger(DeliveryService.class);
 
 	@Autowired
-	QuoteRepository quoteRepo;
+	QuoteService quoteService;
 	@Autowired
 	DeliveryRepository deliveryRepo;
 
@@ -57,18 +57,16 @@ public class DeliveryService {
 	// @Autowired
 	// DeliveryTrackerClient deliveryTrackerClient;
 
-	public String createDelivery(Long quoteId, Long orderId) throws Exception{
-		Quote quote = quoteRepo.findById(quoteId).get();
-
+	public UUID createDelivery(Long quoteId, Long orderId) throws Exception{
+		Quote quote = quoteService.getQuoteById(quoteId);
+		if (quote == null)
+			return null;
 		Delivery delivery = new Delivery();
-		delivery.setPickup(quote.getPickup());
-		delivery.setDropoff(quote.getDropoff());
 		delivery.setQuoteId(quote.getId());
 		delivery.setOrderId(orderId);
 		delivery.setFee(quote.getFee());
 		delivery.setStatus(DeliveryStatus.ACTIVE);
 		delivery = deliveryRepo.save(delivery);
-		// TODO: REMOVE THIS AWFUL TESTING SHIT
 		try {
 			delivery.setTrackingId(trackingService.createDeliveryTracking(delivery.getId()));
 		} catch (Exception e) {
@@ -79,7 +77,7 @@ public class DeliveryService {
 		// delivery.setTrackingURL(deliveryTrackerClient.track(delivery.getId()))
 		// if (delivery.getTrackingURL() != null)
 		deliveryRepo.save(delivery);
-		return delivery.getTrackingURL();
+		return delivery.getTrackingId();
 	}
 
 	public Delivery getDeliveryByOrderId(Long orderId, boolean verifyCustomer) {
@@ -88,7 +86,7 @@ public class DeliveryService {
 		if (verifyCustomer) {
 			//validate that the accountId of the order belongs to the user
 			try {
-				validateCustomerId(delivery.getDropoff().getCustomerId());
+				validateCustomerId(quoteService.getQuoteById(delivery.getQuoteId()).getDropoff().getCustomerId());
 			} catch (Exception e) {
 				// TODO: Make this throw an exception so that feign can say that you're not
 				// authorized to look at these deliveries
@@ -196,9 +194,9 @@ public class DeliveryService {
 		TrackingEvent trackingEvent = new TrackingEvent();
 		trackingEvent.setTrackingEventType(TrackingEventType.RECEIVED_DELIVERY);
 		trackingEvent.setLocation(location);
-		trackingService.createEvent(trackingEvent, UUID.fromString(delivery.getTrackingId()), false);
+		trackingService.createEvent(trackingEvent,delivery.getTrackingId(), false);
 
-		Quote quote = quoteRepo.findById(delivery.getQuoteId()).get();
+		Quote quote = quoteService.getQuoteById(delivery.getQuoteId());
 		//Process the payment
 		HttpStatus status = paymentService.processPayment(customer.getStripeId(), driver.getStripeId(), order.getId(), Integer.valueOf((int) (order.getTotal()*100)+((int)quote.getFee()*100)));
 		//If the payment didn't process correctly, then cancel order
@@ -206,7 +204,7 @@ public class DeliveryService {
 			TrackingEvent te = new TrackingEvent();
 			te.setTrackingEventType(TrackingEventType.CANCELLED);
 			te.setLocation(null);
-			trackingService.createEvent(te, UUID.fromString(delivery.getTrackingId()), false);
+			trackingService.createEvent(te, delivery.getTrackingId(), false);
 			return null;
 		}
 

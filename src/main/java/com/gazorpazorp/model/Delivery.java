@@ -3,6 +3,7 @@ package com.gazorpazorp.model;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -43,38 +44,14 @@ public class Delivery {
 	@ElementCollection
 	@JsonIgnore
 	private List<Long> driverBlacklist;
-	
 	private Timestamp createdAt;
-	
-	@Embedded
-	//@Column(name="pickup")
-	private Pickup pickup;
-	@Embedded
-	//@Column(name="dropoff")
-	private Dropoff dropoff;
-	
-//	private List<LineItem> items;
-	
 	private Double fee;
 	@Enumerated(EnumType.STRING)
 	private DeliveryStatus status;
-	
-	//private String trackingURL;
-	private String trackingId;
+	private UUID trackingId;
 	
 	@PrePersist
 	public void onCreate() {
 		this.setCreatedAt(new Timestamp(new Date().getTime()));
 	}
-
-	@Transient
-	@JsonProperty(access=JsonProperty.Access.READ_ONLY)
-	public String getTrackingURL() {
-		return "http://www.liquorintransit.com/api/tracking/"+this.trackingId;//trackingURL;
-	}
-
-	
-	
-	
-	
 }

@@ -45,9 +45,9 @@ public class TrackingController {
 	
 	@PostMapping("/new")
 	@PreAuthorize("#oauth2.hasScope('system')")
-	public ResponseEntity<String> createFirstEvent (@RequestParam Long deliveryId) throws Exception {
+	public ResponseEntity<UUID> createFirstEvent (@RequestParam Long deliveryId) throws Exception {
 		return Optional.ofNullable(trackingService.createDeliveryTracking(deliveryId))
-				.map(o -> new ResponseEntity<String>(o, HttpStatus.OK))
+				.map(o -> new ResponseEntity<UUID>(o, HttpStatus.OK))
 				.orElseThrow(() -> new Exception("Could not create sample!"));
 	}
 	

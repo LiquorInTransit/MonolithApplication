@@ -22,6 +22,7 @@ import com.gazorpazorp.model.LineItem;
 import com.gazorpazorp.model.Order;
 import com.gazorpazorp.model.OrderStatus;
 import com.gazorpazorp.model.Product;
+import com.gazorpazorp.model.Quote;
 import com.gazorpazorp.model.User;
 import com.gazorpazorp.model.dto.DriverDto;
 import com.gazorpazorp.model.dto.OrderCurrentDto;
@@ -48,6 +49,8 @@ public class OrderService {
 	DriverService driverService;
 	@Autowired
 	PaymentService paymentClient;
+	@Autowired
+	QuoteService quoteService;
 	
 	@Autowired
 	DeliveryService deliveryService;
@@ -89,7 +92,6 @@ public class OrderService {
 		Delivery delivery = deliveryService.getDeliveryByOrderId(order.getId(), false);
 		if (delivery == null)
 			return null;
-		order.setTrackingURL(delivery.getTrackingURL());
 		return aggregateOrderCurrent(order, delivery);
 	}
 	
@@ -102,7 +104,6 @@ public class OrderService {
 		Delivery delivery = deliveryService.getDeliveryByOrderId(order.getId(), false);
 		if (delivery == null)
 			return null;
-		order.setTrackingURL(delivery.getTrackingURL());
 		return aggregateOrderCurrent(order, delivery);
 		//return order;
 	}
@@ -147,6 +148,11 @@ public class OrderService {
 		if (orderRepo.findByCustomerIdAndStatusNotIn(customerId, Arrays.asList(TERMINATING_ORDER_STATUSES)) != null) {
 			throw new Exception ("Customer already has an active order");
 		}
+		//Light, dirty check to be sure customer own the quote
+		Quote quote = quoteService.getQuoteById(quoteId);
+		if (quote.getDropoff().getCustomerId() != customerId)
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		
 		Order order = new Order();
 		for (int x = 0; x<items.size(); x++)
 			items.get(x).setOrder(order);
@@ -162,9 +168,8 @@ public class OrderService {
 		
 	//Create delivery from quote
 	//If something failed, then delete the order we just created, and return /*null;*/ an empty responsebody with a 500 status
-		String trackingURL = "";
 		try {
-			trackingURL = deliveryService.createDelivery(quoteId, order.getId());	
+			deliveryService.createDelivery(quoteId, order.getId());	
 		} catch (Exception e) {
 			e.printStackTrace();
 			//The delivery creation failed
@@ -172,7 +177,6 @@ public class OrderService {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		order.setTrackingURL(trackingURL);
 		return new ResponseEntity<>(order, HttpStatus.OK);
 		//return responseBody with the order
 		//return new ResponseBody<Order>(order, HttpStatus.OK);

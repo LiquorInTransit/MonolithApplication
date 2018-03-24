@@ -37,8 +37,6 @@ public class QuoteService {
 		dropoff.setCustomerId(customer.getId());
 		dropoff.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
 		
-		
-		quote.setCustomerId(customer.getId());
 		quote.setPickup(new Pickup(store));
 		quote.setDropoff(dropoff);
 		//TODO: contact order service to find all new orders in last hour. if its higher than 20, change feeMultiplier
