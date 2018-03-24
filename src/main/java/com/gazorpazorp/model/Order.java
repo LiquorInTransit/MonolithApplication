@@ -41,7 +41,7 @@ public class Order {
 	@Column(name="total")
 	private double total;
 	@Column(name="status")
-	@Enumerated(EnumType.STRING)
+	@Enumerated
 	private OrderStatus status;
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private Set<LineItem> items;
