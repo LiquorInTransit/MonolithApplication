@@ -3,6 +3,7 @@ package com.gazorpazorp.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gazorpazorp.model.dto.StoreDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

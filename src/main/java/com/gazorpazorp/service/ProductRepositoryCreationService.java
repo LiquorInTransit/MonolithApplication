@@ -76,7 +76,7 @@ public class ProductRepositoryCreationService extends Thread {
 		
 		//Get all updates up to the latest dataset
 		for (int x = initialDataset.getId()+1; x<latestDataset.getId(); x++) {
-			
+			logger.info("Attempting to fetch dataset from lcboapi.com/datasets/"+x);
 			Dataset dataset = datasetTemplate
 					.exchange("https://www.lcboapi.com/datasets/"+x, HttpMethod.GET, entity, DatasetResult.class)
 					.getBody().getResult();

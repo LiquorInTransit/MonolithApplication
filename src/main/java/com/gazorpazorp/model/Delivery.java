@@ -16,19 +16,32 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Delivery {
 
+	@Id
+	@GenericGenerator(name = "incrementGenerator", strategy = "org.hibernate.id.IncrementGenerator")
+	@GeneratedValue(generator="incrementGenerator")
 	private Long id;
 	private Long quoteId;
 	private Long orderId;
 	private Long driverId;
-	
+	@JsonIgnore
 	private Long driverHold;
+	@ElementCollection
+	@JsonIgnore
 	private List<Long> driverBlacklist;
 	
 	private Timestamp createdAt;
@@ -49,104 +62,9 @@ public class Delivery {
 	//private String trackingURL;
 	private String trackingId;
 	
-	
-	public Delivery () {}
-	
 	@PrePersist
 	public void onCreate() {
 		this.setCreatedAt(new Timestamp(new Date().getTime()));
-	}
-
-	@Id
-	@GenericGenerator(name = "incrementGenerator", strategy = "org.hibernate.id.IncrementGenerator")
-	@GeneratedValue(generator="incrementGenerator")
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-	public Timestamp getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Long getQuoteId() {
-		return quoteId;
-	}
-	public void setQuoteId(Long quoteId) {
-		this.quoteId = quoteId;
-	}
-
-	public Long getOrderId() {
-		return orderId;
-	}
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
-	}
-	
-	public Long getDriverId() {
-		return driverId;
-	}
-	public void setDriverId(Long driverId) {
-		this.driverId = driverId;
-	}
-	
-	@JsonIgnore
-	public Long getDriverHold() {
-		return driverHold;
-	}
-	public void setDriverHold(Long driverHold) {
-		this.driverHold = driverHold;
-	}
-
-	@ElementCollection
-	@JsonIgnore
-	public List<Long> getDriverBlacklist() {
-		return driverBlacklist;
-	}
-	public void setDriverBlacklist(List<Long> driverBlacklist) {
-		this.driverBlacklist = driverBlacklist;
-	}
-
-	public Pickup getPickup() {
-		return pickup;
-	}
-	public void setPickup(Pickup pickup) {
-		this.pickup = pickup;
-	}
-
-	public Dropoff getDropoff() {
-		return dropoff;
-	}
-	public void setDropoff(Dropoff dropoff) {
-		this.dropoff = dropoff;
-	}
-	
-//	@Transient
-//	public List<LineItem> getItems() {
-//		return items;
-//	}
-//	public void setItems(List<LineItem> items) {
-//		this.items = items;
-//	}
-
-	public Double getFee() {
-		return fee;
-	}
-	public void setFee(Double fee) {
-		this.fee = fee;
-	}
-
-	public DeliveryStatus getStatus() {
-		return status;
-	}
-	public void setStatus(DeliveryStatus status) {
-		this.status = status;
 	}
 
 	@Transient
@@ -154,17 +72,7 @@ public class Delivery {
 	public String getTrackingURL() {
 		return "http://www.liquorintransit.com/api/tracking/"+this.trackingId;//trackingURL;
 	}
-//	public void setTrackingURL(String trackingURL) {
-//		this.trackingURL = trackingURL;
-//	}
 
-	public String getTrackingId() {
-		return trackingId;
-	}
-	public void setTrackingId(String trackingId) {
-		this.trackingId = trackingId;
-	}
-	
 	
 	
 	

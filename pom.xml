@@ -71,6 +71,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>io.projectreactor</groupId>
+		    <artifactId>reactor-core</artifactId>
+		    <version>2.5.0.M2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<scope>runtime</scope>

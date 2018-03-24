@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gazorpazorp.model.Store;
+import com.gazorpazorp.model.dto.StoreDto;
 import com.gazorpazorp.service.StoreService;
 
 @RestController
@@ -23,7 +23,7 @@ public class StoreController {
 	@GetMapping("/locate")
 	public ResponseEntity getSampleById (@RequestParam("lat")double latitude, @RequestParam("long")double longitude) throws Exception {
 		return Optional.ofNullable(storeService.locateClosestStoreToCoords(latitude, longitude))
-				.map(s -> new ResponseEntity<Store>(s, HttpStatus.OK))
+				.map(s -> new ResponseEntity<StoreDto>(s, HttpStatus.OK))
 				.orElseThrow(() -> new Exception("There are no store near the coordinates provided."));
 	}
 

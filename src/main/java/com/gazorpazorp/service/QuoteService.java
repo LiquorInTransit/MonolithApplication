@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.gazorpazorp.model.Dropoff;
 import com.gazorpazorp.model.Pickup;
 import com.gazorpazorp.model.Quote;
-import com.gazorpazorp.model.Store;
 import com.gazorpazorp.model.dto.CustomerDetailsDto;
+import com.gazorpazorp.model.dto.StoreDto;
 import com.gazorpazorp.repository.QuoteRepository;
 
 @Service
@@ -30,7 +30,7 @@ public class QuoteService {
 		Quote quote = new Quote();
 		CustomerDetailsDto customer = meService.getCustomer();
 		logger.error("These are the coordinates obtained from the customer: " + customer.getLocation().getLatitude()+", "+customer.getLocation().getLongitude());
-		Store store = storeService.locateClosestStoreToCoords(customer.getLocation().getLatitude(), customer.getLocation().getLongitude());
+		StoreDto store = storeService.locateClosestStoreToCoords(customer.getLocation().getLatitude(), customer.getLocation().getLongitude());
 		
 		Dropoff dropoff = new Dropoff();
 		dropoff.setLocation(customer.getLocation());

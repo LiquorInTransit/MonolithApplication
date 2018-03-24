@@ -1,7 +1,6 @@
 package com.gazorpazorp.service;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.gazorpazorp.client.LCBOFeignClient;
 import com.gazorpazorp.model.Store;
+import com.gazorpazorp.model.dto.StoreDto;
 import com.gazorpazorp.repository.StoreRepository;
 
 @Service
@@ -25,16 +25,19 @@ public class StoreService {
 	@Autowired
 	StoreRepository storeRepo;
 	
-	public Store locateClosestStoreToCoords(double latitude, double longitude) {
-		Store store = /*new Store();*/lcboClient.getStoresNearPoints(latitude, longitude).getResult().get(0);
+	public StoreDto locateClosestStoreToCoords(double latitude, double longitude) {
+		Store storeObj = /*new Store();*/lcboClient.getStoresNearPoints(latitude, longitude).getResult().get(0);
+		if (storeObj!=null)
+			storeObj.Incorporate();
+		StoreDto store = new StoreDto();
+		store.setId(storeObj.getId());
+		store.setLocation(storeObj.getLocation());
 //		store.setCity("Cambridge");
 //		store.setAddress("120 Cedar St.");
 //		store.setId(new Long(382));
 //		store.setLatitude(43.3526762);
 //		store.setLongitude(-80.3319758);
 //		store.setPostalCode("N1S1W4");
-		if (store!=null)
-			store.Incorporate();
 		logger.warn("STORE_ID" + store.getId());
 		return store;
 	}

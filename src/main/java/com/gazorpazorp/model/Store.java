@@ -46,7 +46,7 @@ public class Store {
 	@JsonProperty(access=JsonProperty.Access.WRITE_ONLY)
 	private String postalCode;
 	
-	@Transient
+	@Embedded
 	private Location location;
 	
 	public void Incorporate() {

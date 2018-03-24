@@ -1,10 +1,10 @@
 package com.gazorpazorp.model;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
-import lombok.AllArgsConstructor;
+import com.gazorpazorp.model.dto.StoreDto;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,10 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Pickup {
 	@Embedded
-	private Store store;
+	private StoreDto store;
 	private Integer pickupETA;
 	
-	public Pickup(Store store) {
+	public Pickup(StoreDto store) {
 		this.store = store;
 	}	
 }
