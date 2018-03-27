@@ -150,7 +150,7 @@ public class OrderService {
 		}
 		//Light, dirty check to be sure customer own the quote
 		Quote quote = quoteService.getQuoteById(quoteId);
-		if (quote.getDropoff().getCustomerId() != customerId)
+		if (quote.getCustomerId() != customerId)
 			return new ResponseEntity(HttpStatus.FORBIDDEN);
 		
 		Order order = new Order();

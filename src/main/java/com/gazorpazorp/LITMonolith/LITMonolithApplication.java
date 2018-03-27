@@ -12,6 +12,8 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -70,9 +72,13 @@ public class LITMonolithApplication {
 	@Autowired
 	ProductRepositoryCreationService PRCService;
 	
+	
+	@Autowired
+	Environment env;
 	@PostConstruct
 	public void getProducts() {
-		PRCService.start();
+		if (Arrays.asList(env.getActiveProfiles()).contains("dev"))
+			PRCService.start();
 	}
 	@Configuration
 	public static class RepositoryConfig extends RepositoryRestConfigurerAdapter {

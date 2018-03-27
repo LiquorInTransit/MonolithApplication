@@ -13,7 +13,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long>{
 	public Delivery findByOrderId(@Param("orderId") Long orderId);
 	public void deleteByOrderId(@Param("orderId") Long orderId);
 	
-	public List<Delivery> findByDropoffCustomerId(@Param("dropoff.customerId") Long id);
+//	public List<Delivery> findByDropoffCustomerId(@Param("dropoff.customerId") Long id);
 	
 	public List<Delivery> findByDriverId(@Param("driverId") Long id);
 	

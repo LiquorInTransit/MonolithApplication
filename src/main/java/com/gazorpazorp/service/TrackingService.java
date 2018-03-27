@@ -111,7 +111,7 @@ public class TrackingService {
 		if (delivery==null || customer==null)
 			throw new Exception("Delivery or customer does not exist");
 		
-		return quoteService.getQuoteById(delivery.getQuoteId()).getDropoff().getCustomerId().equals(customer.getId());
+		return quoteService.getQuoteById(delivery.getQuoteId()).getCustomerId().equals(customer.getId());
 	}
 	public boolean verifyDriver(Long deliveryId) throws Exception {
 		Driver driver = getDriver();

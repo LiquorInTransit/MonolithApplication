@@ -86,7 +86,7 @@ public class DeliveryService {
 		if (verifyCustomer) {
 			//validate that the accountId of the order belongs to the user
 			try {
-				validateCustomerId(quoteService.getQuoteById(delivery.getQuoteId()).getDropoff().getCustomerId());
+				validateCustomerId(quoteService.getQuoteById(delivery.getQuoteId()).getCustomerId());
 			} catch (Exception e) {
 				// TODO: Make this throw an exception so that feign can say that you're not
 				// authorized to look at these deliveries
@@ -139,10 +139,10 @@ public class DeliveryService {
 		return true;
 	}
 
-	//Not sure if this method even works...
-	public List<Delivery> getDeliveriesForCustomer() {
-		return deliveryRepo.findByDropoffCustomerId(gatewayClient.getCustomer().getId());
-	}
+//	//Not sure if this method even works...
+//	public List<Delivery> getDeliveriesForCustomer() {
+//		return deliveryRepo.findByDropoffCustomerId(gatewayClient.getCustomer().getId());
+//	}
 
 	public List<Delivery> getDriverHistory() {
 		return deliveryRepo.findByDriverId(gatewayClient.getDriver().getId());

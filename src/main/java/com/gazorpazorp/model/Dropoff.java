@@ -12,7 +12,6 @@ import lombok.Setter;
 @Embeddable
 @NoArgsConstructor
 public class Dropoff {
-	private Long customerId;
 	private String customerName;
 	@Embedded
 	private Location location;

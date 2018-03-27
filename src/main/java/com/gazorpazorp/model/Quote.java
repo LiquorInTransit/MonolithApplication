@@ -32,6 +32,7 @@ public class Quote {
 	@GenericGenerator(name = "incrementGenerator", strategy = "org.hibernate.id.IncrementGenerator")
 	@GeneratedValue(generator="incrementGenerator")
 	private Long id;
+	private Long customerId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 	private Timestamp estimatedAt;
 	@Embedded
