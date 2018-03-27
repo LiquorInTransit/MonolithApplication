@@ -90,7 +90,7 @@
   - name: Send the .conf file accross to the new instance
     copy:
       src: LITMonolith-0.0.1-SNAPSHOT.conf
-      dest: /home/ec2-user/app/target
+      dest: /home/ec2-user/app/target/
       mode: 0700
 
   - name: Build a link to the executable so it becomes a service
