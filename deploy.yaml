@@ -1,4 +1,4 @@
-#  Provisions a new uaa-service
+#  Provisions a new Monolith Application
 #  WOW, tha's pretty neat!
 
 - hosts: localhost
@@ -8,7 +8,7 @@
      keypair_name: lit-backend-keypair
      instance_type: t2.micro
      image_name: ami-e091bc85
-     live_ip_address: 18.221.100.47
+     live_ip_address: 52.14.63.132
   
   tasks:
     - name: Setup Global Vars
@@ -46,10 +46,10 @@
         region: "{{region}}"
         exact_count: 1 
         count_tag:
-          Name: uaa-service
+          Name: monolith
           Deploy: New
         instance_tags:
-          Name: uaa-service
+          Name: monolith
           Deploy: Blue
       register: ec2
 
@@ -69,22 +69,6 @@
   vars_files:
     - NGINXConfig/nginx_vars.yml
   tasks:
-#  - name: upgrade all packages
-#    yum: name=* state=latest
-#    become: true
-  
-#  - name: Install JDK
-#    yum:
-#       name: java-1.8.0-openjdk-devel
-#       state: latest
-#    become: true
-
-#  - name: Use Java8 for Runtime Java
-#    alternatives:
-#       name: java
-#       path: /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
-#       link: /usr/bin/java
-#    become: true
   - name: Install sysstat
     yum:
       name: sysstat
@@ -99,19 +83,19 @@
 
   - name: Send the deployment across to the new instance
     copy: 
-       src: target/AuthenticationService-0.0.1-SNAPSHOT.jar
+       src: target/LITMonolith-0.0.1-SNAPSHOT.jar
        dest: /home/ec2-user/app/target/
        mode: 0700
        
   - name: Send the .conf file accross to the new instance
     copy:
-      src: AuthenticationService-0.0.1-SNAPSHOT.conf
+      src: LITMonolith-0.0.1-SNAPSHOT.conf
       dest: /home/ec2-user/app/target
       mode: 0700
 
   - name: Build a link to the executable so it becomes a service
     file:
-            src: /home/ec2-user/app/target/AuthenticationService-0.0.1-SNAPSHOT.jar
+            src: /home/ec2-user/app/target/LITMonolith-0.0.1-SNAPSHOT.jar
             dest: /etc/init.d/microservice
             state: link
     become: true
@@ -180,7 +164,7 @@
     ec2_remote_facts:
        filters:
           "tag:Deploy": Blue
-          "tag:Name": uaa-service
+          "tag:Name": monolith
           instance-state-name: running
        region: "{{ region }}"
     register: new_server
@@ -189,7 +173,7 @@
     ec2_remote_facts:
        filters:
           "tag:Deploy": Green
-          "tag:Name": uaa-service
+          "tag:Name": monolith
           instance-state-name: running
        region: "{{ region }}"
     register: old_green
@@ -224,7 +208,7 @@
       exact_count: 0
       count_tag:
         Deploy: Green
-        Name: uaa-service
+        Name: monolith
       region: "{{ region }}"
       image: notneeded
 
