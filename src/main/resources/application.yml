@@ -130,5 +130,25 @@ spring:
       naming.implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
       ddl-auto: create
     show-sql: true
+    
+
+---
+
+spring:
+  profiles: live
+  datasource:
+    platform: live
+    name: test
+    url: jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8
+    username: SA
+    password: 
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.HSQLDialect
+    hibernate:
+      naming.implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+      ddl-auto: create
+    show-sql: true
   
   
