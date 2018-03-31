@@ -1,11 +1,10 @@
 #  Provisions a new Monolith Application
-#  WOW, tha's pretty neat!
 
 - hosts: localhost
   gather_facts: no
   vars: 
      region: us-east-2
-     keypair_name: lit-backend-keypair-v2
+     keypair_name: lit-backend-keypair
      instance_type: t2.micro
      image_name: ami-e091bc85
      live_ip_address: 52.14.63.132
