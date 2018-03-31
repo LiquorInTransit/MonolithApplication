@@ -37,7 +37,7 @@ public class ShoppingCart {
 	
 	public ShoppingCart incorporate(CartEvent cartEvent) {
 		Flux<CartEventType> validCartEventTypes = Flux.fromStream(Stream.of(CartEventType.ADD_ITEM, CartEventType.REMOVE_ITEM));
-		if (validCartEventTypes.exists(cartEventType -> cartEvent.getCartEventType().equals(cartEventType)).get()) {
+		if (validCartEventTypes.any(cartEventType -> cartEvent.getCartEventType().equals(cartEventType)).block()) {
 			productMap.put(cartEvent.getProductId(), 
 					productMap.getOrDefault(cartEvent.getProductId(), 0) + 
 					(cartEvent.getQty() * (cartEvent.getCartEventType()

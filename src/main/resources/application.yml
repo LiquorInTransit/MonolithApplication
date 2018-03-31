@@ -24,6 +24,11 @@ logging:
             client:
               ConfigServicePropertySourceLocator: ERROR
 spring:
+  boot:
+    admin:
+      context-path: /admin
+      client:
+        url: http://localhost:8080/admin
   webservices:
     servlet:
       load-on-startup: 1
@@ -83,6 +88,10 @@ management:
   security:
     enabled: true
     roles: ACTUATOR
+  endpoints:
+    web:
+      exposure:
+        include: "*"
     
 endpoints:
   enabled: false

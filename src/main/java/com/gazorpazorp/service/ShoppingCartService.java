@@ -104,7 +104,7 @@ public class ShoppingCartService {
 		ShoppingCart shoppingCart = cartEvents
 				.takeWhile(cartEvent -> !ShoppingCart.isTerminal(cartEvent.getCartEventType()))
 				.reduceWith(() -> new ShoppingCart(), ShoppingCart::incorporate)
-				.get();		
+				.block();
 		
 		Set<Product> products = new HashSet<>();
 		if (!shoppingCart.getProductMap().isEmpty())

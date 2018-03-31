@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.token.grant.password.ResourceO
 
 import feign.RequestInterceptor;
 
+
 @Configuration
 @EnableConfigurationProperties
 public class ImgurTokenRequestPasswordConfiguration {

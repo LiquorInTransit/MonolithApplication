@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
@@ -46,11 +47,14 @@ import com.gazorpazorp.model.Product;
 import com.gazorpazorp.service.LITUserDetailsService;
 import com.gazorpazorp.service.ProductRepositoryCreationService;
 
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
+
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
 @EntityScan(basePackages="com.gazorpazorp")
 @EnableFeignClients("com.gazorpazorp.client")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableAdminServer
 public class LITMonolithApplication {
 	
 //	@PostConstruct
@@ -126,9 +130,9 @@ public class LITMonolithApplication {
 	        defaultTokenServices.setSupportRefreshToken(true);
 	        return defaultTokenServices;
 		}
-
-		@Autowired
-		AuthenticationManager authenticationManager;
+		
+//		@Autowired
+//		AuthenticationManager authenticationManager;
 
 
 		//This can stay the way it is
@@ -181,6 +185,8 @@ public class LITMonolithApplication {
 			.accessTokenValiditySeconds(1000);
 		}		
 
+		@Autowired
+		LITUserDetailsService userDetailsService;
 		@Override
 		public void configure (AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
@@ -192,7 +198,7 @@ public class LITMonolithApplication {
 			//.accessTokenConverter(accessTokenConverter())
 			.tokenEnhancer(tokenEnhancerChain)
 			.exceptionTranslator(loggingExceptionTranslator())
-			.authenticationManager(authenticationManager);
+			/*.authenticationManager(authenticationManager)*/.userDetailsService(userDetailsService);
 		}		
 		
 		@Bean
