@@ -32,6 +32,20 @@ SET FILES LOG SIZE 50
 ALTER USER SA SET LOCAL TRUE
 //CREATE SCHEMA PUBLIC AUTHORIZATION DBA
 SET SCHEMA PUBLIC*/
+/*drop table cart_event if exists
+drop table customer if exists
+drop table delivery if exists
+drop table delivery_driver_blacklist if exists
+drop table delivery_tracking if exists
+drop table driver if exists
+drop table lcbo_order if exists
+drop table line_item if exists
+drop table place if exists
+drop table product if exists
+drop table quote if exists
+drop table store if exists
+drop table tracking_event if exists
+drop table user if exists*/
 CREATE MEMORY TABLE PUBLIC.CART_EVENT(ID BIGINT NOT NULL PRIMARY KEY,CART_EVENT_TYPE INTEGER,CREATED_AT TIMESTAMP,CUSTOMER_ID BIGINT,LAST_MODIFIED TIMESTAMP,PRODUCT_ID BIGINT,QTY INTEGER)
 CREATE INDEX IDX_CART_EVENT_CUSTOMER ON PUBLIC.CART_EVENT(ID,CUSTOMER_ID)
 CREATE MEMORY TABLE PUBLIC.CUSTOMER(ID BIGINT NOT NULL PRIMARY KEY,LOCATION_ADDRESS VARCHAR(255),LOCATION_CITY VARCHAR(255),LOCATION_LATITUDE DOUBLE,LOCATION_LONGITUDE DOUBLE,LOCATION_POSTAL_CODE VARCHAR(255),PAYMENT_METHOD VARCHAR(255),PROFILE_IMAGE_ID VARCHAR(255),STRIPE_ID VARCHAR(255),USER_ID BIGINT)
