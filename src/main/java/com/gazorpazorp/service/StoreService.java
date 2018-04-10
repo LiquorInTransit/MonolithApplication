@@ -26,7 +26,7 @@ public class StoreService {
 	StoreRepository storeRepo;
 	
 	public StoreDto locateClosestStoreToCoords(double latitude, double longitude) {
-		Store storeObj = /*new Store();*/lcboClient.getStoresNearPoints(latitude, longitude).getResult().get(0);
+		Store storeObj = storeRepo.findById(storeRepo.getStoresNearPoints(latitude, longitude).get(0).getId()).orElse(null);///*new Store();*/lcboClient.getStoresNearPoints(latitude, longitude).getResult().get(0);
 		if (storeObj!=null)
 			storeObj.Incorporate();
 		StoreDto store = new StoreDto();
