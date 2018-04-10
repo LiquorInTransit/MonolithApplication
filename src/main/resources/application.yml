@@ -105,6 +105,7 @@ endpoints:
   
 lcbo-client:
   key: MDo1NDQwN2RjYy0wMDhkLTExZTctYWEwNy0yMzI4NjgxOTRjOWU6V2hSaDdoOXBVbjFjTU80cUtBZlpxRkI4UlJDVWcxRWlBUWZZ
+  url: https://www.lcboapi.com
   
 imgur:
   oauth2:

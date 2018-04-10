@@ -99,8 +99,11 @@ public class Product {
 	@JsonIgnore
 	@Transient
 	private double price;
+	public double getPrice() {
+		return this.priceInCents*1.029;
+	}
 	
 	public void Incorporate() {
-		this.price = this.price/100.0*1.029;
+		this.price = this.priceInCents*1.029;
 	}
 }

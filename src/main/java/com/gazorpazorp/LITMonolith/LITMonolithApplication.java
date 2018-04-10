@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 
+import org.hsqldb.util.DatabaseManagerSwing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,11 +20,10 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
@@ -49,6 +49,7 @@ import com.gazorpazorp.service.ProductRepositoryCreationService;
 
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 
+@EnableAsync
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
 @EntityScan(basePackages="com.gazorpazorp")
@@ -57,11 +58,11 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 @EnableAdminServer
 public class LITMonolithApplication {
 	
-//	@PostConstruct
-//	public void getDbManager(){
-//	   DatabaseManagerSwing.main(
-//		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8", "--user", "SA", "--password", ""});
-//	}
+	@PostConstruct
+	public void getDbManager(){
+	   DatabaseManagerSwing.main(
+		new String[] { "--url", "jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8", "--user", "SA", "--password", ""});
+	}
 
 
 	@Autowired
@@ -80,8 +81,8 @@ public class LITMonolithApplication {
 	Environment env;
 	@PostConstruct
 	public void getProducts() {
-		if (Arrays.asList(env.getActiveProfiles()).contains("dev"))
-			PRCService.start();
+//		if (Arrays.asList(env.getActiveProfiles()).contains("dev"))
+//			PRCService.start();
 	}
 	@Configuration
 	public static class RepositoryConfig extends RepositoryRestConfigurerAdapter {

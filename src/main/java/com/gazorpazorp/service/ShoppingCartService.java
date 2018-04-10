@@ -19,16 +19,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gazorpazorp.model.CartEvent;
-import com.gazorpazorp.model.CartEventType;
 import com.gazorpazorp.model.Catalog;
 import com.gazorpazorp.model.CheckoutResult;
 import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.Inventory;
 import com.gazorpazorp.model.LineItem;
 import com.gazorpazorp.model.Order;
+import com.gazorpazorp.model.OrderEvent;
+import com.gazorpazorp.model.OrderEventType;
 import com.gazorpazorp.model.Product;
 import com.gazorpazorp.model.ShoppingCart;
+import com.gazorpazorp.model.ShoppingCartEvent;
+import com.gazorpazorp.model.ShoppingCartEventType;
 import com.gazorpazorp.model.dto.LineItemDto;
 import com.gazorpazorp.repository.CartEventRepository;
 import com.stripe.Stripe;
@@ -75,7 +77,7 @@ public class ShoppingCartService {
 	}
 	
 	//TODO: Add check that productId belongs to a real product.
-	public Boolean addCartEvent(CartEvent cartEvent) {
+	public Boolean addCartEvent(ShoppingCartEvent cartEvent) {
 		getAuthenticatedCustomer();
 		logger.info("Add cart Customer ID: " + customer.getId());
 		if (customer.getId() != null) {
@@ -94,13 +96,13 @@ public class ShoppingCartService {
 	
 	@Transactional(readOnly = true)
 	public ShoppingCart aggregateCartEvents(Long customerId) throws Exception {
-		CartEvent ev = cartEventRepository.findTopByCustomerIdAndCartEventTypeInOrderByCreatedAtDesc(customerId, Arrays.asList(CartEventType.CLEAR_CART, CartEventType.CHECKOUT));
+		ShoppingCartEvent ev = cartEventRepository.findTopByCustomerIdAndCartEventTypeInOrderByCreatedAtDesc(customerId, Arrays.asList(ShoppingCartEventType.CLEAR_CART, ShoppingCartEventType.CHECKOUT));
 		Timestamp ts;
 		if (ev == null)
 			ts = new Timestamp(0);
 		else
 			ts = ev.getCreatedAt();
-		Flux<CartEvent> cartEvents = Flux.fromStream(cartEventRepository.findByCustomerIdAndCreatedAtAfterOrderByCreatedAtAsc(customerId, ts));
+		Flux<ShoppingCartEvent> cartEvents = Flux.fromStream(cartEventRepository.findByCustomerIdAndCreatedAtAfterOrderByCreatedAtAsc(customerId, ts));
 		ShoppingCart shoppingCart = cartEvents
 				.takeWhile(cartEvent -> !ShoppingCart.isTerminal(cartEvent.getCartEventType()))
 				.reduceWith(() -> new ShoppingCart(), ShoppingCart::incorporate)
@@ -163,7 +165,8 @@ public class ShoppingCartService {
 							checkoutResult.appendResultMessage("Order created");
 							checkoutResult.setOrder(orderResponse);
 							checkoutResult.setStatus(HttpStatus.OK.value());
-							logger.warn("Added checkout cart event: " + addCartEvent(new CartEvent(CartEventType.CHECKOUT)).toString());
+							logger.warn("Added checkout cart event: " + addCartEvent(new ShoppingCartEvent(ShoppingCartEventType.CHECKOUT)).toString());
+							orderService.addOrderEvent(new OrderEvent(OrderEventType.PURCHASED, orderResponse.getId()), false);//Don't bother verifying here.
 						} else {
 							//Don't continue
 							checkoutResult.setResultMessage("Error Creating Order");

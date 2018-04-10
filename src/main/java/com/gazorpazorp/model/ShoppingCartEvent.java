@@ -1,0 +1,126 @@
+package com.gazorpazorp.model;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+@Table(name="CART_EVENT", indexes = {@Index(name = "IDX_CART_EVENT_CUSTOMER", columnList = "id,customer_Id")})
+public class ShoppingCartEvent implements Serializable{
+
+	private Long id;
+	private Long customerId;
+	
+	@Enumerated(EnumType.STRING)
+	private ShoppingCartEventType cartEventType;
+	
+	private Long productId;
+	private Integer qty;
+	
+	@LastModifiedDate
+	private Date lastModified;
+	//@CreatedDate
+	private Timestamp createdAt;
+	
+	public ShoppingCartEvent() {}
+	public ShoppingCartEvent(ShoppingCartEventType cartEventType) {
+		this.cartEventType = cartEventType;
+	}
+
+
+	@PrePersist
+	void onCreate() {
+		this.setCreatedAt(new Timestamp(new Date().getTime()));
+	}
+
+	
+	@Id
+	@GenericGenerator(name = "incrementGenerator", strategy = "org.hibernate.id.IncrementGenerator")
+	@GeneratedValue(generator="incrementGenerator")
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	@Column(name="customer_id")
+	public Long getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	@Column(name="cart_event_type")
+	public ShoppingCartEventType getCartEventType() {
+		return cartEventType;
+	}
+	public void setCartEventType(ShoppingCartEventType cartEventType) {
+		this.cartEventType = cartEventType;
+	}
+
+
+	@Column(name="product_id")
+	public Long getProductId() {
+		return productId;
+	}
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+
+	@Column(name="qty")
+	public Integer getQty() {
+		return qty;
+	}
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")	
+    public Date getLastModified() {
+        return lastModified;
+    }
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+    
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
+
+	@Override
+	public String toString() {
+		return "CartEvent [id=" + id + ", customerId=" + customerId + ", cartEventType=" + cartEventType
+				+ ", productId=" + productId + ", qty=" + qty + ", lastModified=" + lastModified + ", createdAt="
+				+ createdAt + "]";
+	}
+    
+    
+	
+}

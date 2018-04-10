@@ -1,5 +1,6 @@
 package com.gazorpazorp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.LineItem;
 import com.gazorpazorp.model.Order;
 import com.gazorpazorp.model.dto.OrderCurrentDto;
@@ -39,6 +39,8 @@ public class OrderController {
 	@PostMapping
 	@PreAuthorize("#oauth2.hasScope('system')")
 	public ResponseEntity<Order> createOrder (@RequestBody List<LineItem> items, @RequestParam("quote") Long quoteId, @RequestParam("customerId") Long customerId) throws Exception {
+		assert items != null;
+		assert items.size() > 0;
 		return Optional.ofNullable(orderService.createOrder(items, quoteId, customerId))
 				.orElseThrow(() -> new Exception("Could not create order!"));
 	}

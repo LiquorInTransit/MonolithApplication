@@ -35,19 +35,19 @@ public class ShoppingCart {
 		return lineItems;
 	}
 	
-	public ShoppingCart incorporate(CartEvent cartEvent) {
-		Flux<CartEventType> validCartEventTypes = Flux.fromStream(Stream.of(CartEventType.ADD_ITEM, CartEventType.REMOVE_ITEM));
+	public ShoppingCart incorporate(ShoppingCartEvent cartEvent) {
+		Flux<ShoppingCartEventType> validCartEventTypes = Flux.fromStream(Stream.of(ShoppingCartEventType.ADD_ITEM, ShoppingCartEventType.REMOVE_ITEM));
 		if (validCartEventTypes.any(cartEventType -> cartEvent.getCartEventType().equals(cartEventType)).block()) {
 			productMap.put(cartEvent.getProductId(), 
 					productMap.getOrDefault(cartEvent.getProductId(), 0) + 
 					(cartEvent.getQty() * (cartEvent.getCartEventType()
-							.equals(CartEventType.ADD_ITEM)?1:-1)));
+							.equals(ShoppingCartEventType.ADD_ITEM)?1:-1)));
 		}
 		return this;
 	}
 	
-	 public static Boolean isTerminal(CartEventType eventType) {
-		 return (eventType == CartEventType.CLEAR_CART || eventType == CartEventType.CHECKOUT);
+	 public static Boolean isTerminal(ShoppingCartEventType eventType) {
+		 return (eventType == ShoppingCartEventType.CLEAR_CART || eventType == ShoppingCartEventType.CHECKOUT);
 	 }
 
 	public Map<Long, Integer> getProductMap() {

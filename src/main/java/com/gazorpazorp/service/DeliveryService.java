@@ -10,7 +10,9 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.gazorpazorp.model.Customer;
@@ -20,13 +22,14 @@ import com.gazorpazorp.model.Driver;
 import com.gazorpazorp.model.LineItem;
 import com.gazorpazorp.model.Location;
 import com.gazorpazorp.model.Order;
+import com.gazorpazorp.model.OrderEvent;
+import com.gazorpazorp.model.OrderEventType;
 import com.gazorpazorp.model.Quote;
 import com.gazorpazorp.model.TrackingEvent;
 import com.gazorpazorp.model.TrackingEventType;
 import com.gazorpazorp.model.dto.DeliveryWithItemsDto;
 import com.gazorpazorp.model.dtoMapper.DeliveryMapper;
 import com.gazorpazorp.repository.DeliveryRepository;
-import com.gazorpazorp.repository.QuoteRepository;
 
 @Service
 public class DeliveryService {
@@ -38,8 +41,8 @@ public class DeliveryService {
 	DeliveryRepository deliveryRepo;
 
 	@Autowired
+	@Lazy(value=true)
 	OrderService orderService;
-
 	@Autowired
 	MeService gatewayClient;
 	@Autowired
@@ -47,6 +50,7 @@ public class DeliveryService {
 	@Autowired
 	DriverService driverService;
 	@Autowired
+	@Lazy(value=true)
 	TrackingService trackingService;
 	@Autowired
 	PaymentService paymentService;
@@ -57,7 +61,8 @@ public class DeliveryService {
 	// @Autowired
 	// DeliveryTrackerClient deliveryTrackerClient;
 
-	public UUID createDelivery(Long quoteId, Long orderId) throws Exception{
+	@Async
+	public UUID createDelivery(Long quoteId, Long orderId) { //throws Exception{
 		Quote quote = quoteService.getQuoteById(quoteId);
 		if (quote == null)
 			return null;
@@ -71,7 +76,8 @@ public class DeliveryService {
 			delivery.setTrackingId(trackingService.createDeliveryTracking(delivery.getId()));
 		} catch (Exception e) {
 			deliveryRepo.delete(delivery);
-			throw new Exception("Failed to creating tracking information");
+			orderService.addOrderEvent(new OrderEvent(OrderEventType.CANCELLED, orderId), false);
+//			throw new Exception("Failed to creating tracking information");
 		}
 		//delivery.setTrackingURL(deliveryTrackingClient.createNewEvent(delivery.getId()));
 		// delivery.setTrackingURL(deliveryTrackerClient.track(delivery.getId()))

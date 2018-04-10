@@ -23,3 +23,6 @@ dist/
 nbdist/
 .nb-gradle/
 /log.log
+/log.log.2018-03-31.0.gz
+/log.log.2018-04-08.0.gz
+*.gz

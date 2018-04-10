@@ -13,9 +13,9 @@ import com.gazorpazorp.model.InventoryResult;
 import feign.Headers;
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(name="lcbo-client", fallbackFactory=LCBOClientFallback.class)
+@FeignClient(/*name="lcbo-client",*/name="lcboclient", url="${lcbo-client.url}", fallbackFactory=LCBOClientFallback.class)
 public interface LCBOInventoryClient {
-	@GetMapping(value="/stores/{storeId}/products/{productId}/inventory", consumes = "application/json")
+	@GetMapping(value="/stores/{storeId}/products/{productId}/inventory?access_key=${lcbo-client.key}", consumes = "application/json")
 	@Headers(value = { "Authorization: Token ${lcbo-client.key}", "Content-Type: application/json"})
 	InventoryResult getInventory(@PathVariable("storeId") Long storeId, @PathVariable("productId") String productId);
 }

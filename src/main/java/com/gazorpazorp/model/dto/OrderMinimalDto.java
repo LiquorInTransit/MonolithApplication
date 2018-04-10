@@ -10,6 +10,7 @@ public class OrderMinimalDto {
 	private Timestamp createdAt;
 	
 	private OrderStatus status;
+	private String message;
 	
 	
 	public Long getId() {
@@ -40,6 +41,13 @@ public class OrderMinimalDto {
 		this.status = status;
 	}
 	
+	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
 	@Override
 	public String toString() {
 		return "OrderMinimalDto [id=" + id + ", status=" + status + "]";

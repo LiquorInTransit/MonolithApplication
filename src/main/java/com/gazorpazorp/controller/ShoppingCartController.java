@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gazorpazorp.model.CartEvent;
+import com.gazorpazorp.model.ShoppingCartEvent;
+import com.gazorpazorp.model.ShoppingCartEventType;
 import com.gazorpazorp.service.ShoppingCartService;
 
 @RestController
@@ -25,7 +26,9 @@ public class ShoppingCartController {
 	ShoppingCartService shoppingCartService;
 	
 	@PostMapping
-	public ResponseEntity addCartEvent(@RequestBody CartEvent cartEvent) throws Exception {
+	public ResponseEntity addCartEvent(@RequestBody ShoppingCartEvent cartEvent) throws Exception {
+		assert cartEvent.getCartEventType() != ShoppingCartEventType.CHECKOUT; //CHECKOUT IS ONLY ALLOWED FROM THE CHECKOUT ENDPOINT
+		
 		return Optional.ofNullable(shoppingCartService.addCartEvent(cartEvent))
 				.map(event -> new ResponseEntity(HttpStatus.OK))
 				.orElseThrow(() -> new Exception("Could not find shopping cart"));
