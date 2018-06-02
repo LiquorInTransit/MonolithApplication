@@ -158,7 +158,7 @@ spring:
         dialect: org.hibernate.dialect.HSQLDialect
     hibernate:
       naming.implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
   
   
