@@ -2,6 +2,7 @@ package com.gazorpazorp.service;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.gazorpazorp.model.Order;
 import com.gazorpazorp.model.OrderEvent;
 import com.gazorpazorp.model.OrderEventType;
 import com.stripe.Stripe;
@@ -21,6 +22,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.model.ChargeOutcome;
 import com.stripe.model.EphemeralKey;
+import com.stripe.model.Transfer;
 import com.stripe.net.RequestOptions;
 
 
@@ -108,7 +110,6 @@ public class PaymentService {
 	}
 	
 	/**
-	 * TODO: Figure out some good error handling. Add error to the event maybe?
 	 * @param customerStripeId
 	 * @param orderId
 	 * @param amount (in cents)
@@ -134,11 +135,12 @@ public class PaymentService {
 			params.put("customer", cust.getId());
 			params.put("statement_descriptor", "LIT Order "+orderId);
 			params.put("source", source);
+			params.put("transfer_group", orderId.toString());
 //			params.put("destination", driverId);
 //			params.put("application_fee", 400+(int)(amount*.029));
 			params.put("capture", "false");
 			Map<String, String> initialMetadata = new HashMap<String, String>();
-			initialMetadata.put("order_id", "6735");
+			initialMetadata.put("order_id", orderId.toString());
 			params.put("metadata", initialMetadata);
 			Charge charge = Charge.create(params, reqopt);
 			//No longer capturing the charge here.
@@ -156,6 +158,63 @@ public class PaymentService {
 		}
 		//The charge was successfully created. Add the verified event to the order
 		orderService.addOrderEvent(new OrderEvent(OrderEventType.PAYMENT_VERIFIED, orderId), false);
+	}
+	/**
+	 * TODO: Figure out some good error handling. Add error to the event maybe?
+	 * @param customerStripeId
+	 * @param orderId
+	 */
+	@Async
+	public void captureCustomerOrder(String customerStripeId, String driverStripeId, Long orderId, Integer amt) {
+		RequestOptions reqopt = (new RequestOptions.RequestOptionsBuilder())
+				.setApiKey(secretKey)
+				.build();
+		
+		Stripe.apiKey=secretKey;
+
+		com.stripe.model.Customer cust;
+		try {
+			cust = com.stripe.model.Customer.retrieve(customerStripeId, reqopt);
+			Map<String, Object> params = new HashMap<>();
+			params.put("customer", cust.getId());
+			@SuppressWarnings("unused")
+			List<Charge> charges = Charge.list(params, reqopt).getData();
+			for (Charge charge : charges) {
+				Long chgOrderId = Long.parseLong(charge.getMetadata().get("order_id"));
+				if (chgOrderId == orderId && !charge.getCaptured()) {
+					System.out.println("MATCHING ORDER ID");
+					Charge capturedCharge = charge.capture();
+					//Transfer the amount minus LIT's take to the driver
+					transferFundsToDriver(driverStripeId, orderId, amt, charge.getId());
+					break;
+				}
+			}
+		} catch (Exception e) { //THIS IS ONLY IF SOMETHING SERIOUSLY BREAKS. NOT IF SAY, THERE WEREN'T ENOUGH FUNDS. TODO:
+			e.printStackTrace();
+			return; //HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
+	
+	private void transferFundsToDriver(String driverId, Long orderId, Integer amt, String sourceChg) {
+		RequestOptions reqopt = (new RequestOptions.RequestOptionsBuilder())
+				.setApiKey(secretKey)
+				.build();
+		
+		Stripe.apiKey=secretKey;
+
+		com.stripe.model.Customer cust;
+		try {
+			Map<String, Object> params = new HashMap<>();
+			params.put("amount", amt);
+			params.put("currency", "cad");
+			params.put("transfer_group", orderId.toString());
+			params.put("source_transaction", sourceChg);
+			params.put("destination", driverId);
+			Transfer.create(params, reqopt);
+		} catch (Exception e) { 
+			e.printStackTrace();
+			return;
+		}
 	}
 	
 	

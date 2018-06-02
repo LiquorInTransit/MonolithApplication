@@ -147,7 +147,7 @@ spring:
 spring:
   profiles: live
   datasource:
-    platform: live
+    platform: dev
     name: test
     url: jdbc:hsqldb:mem:test://localhost/test?characterEncoding=UTF-8
     username: SA

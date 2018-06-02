@@ -36,7 +36,7 @@ public class OrderEvent {
 	@Column(name="order_event_type")
 	private OrderEventType orderEventType;
 	
-	//Description for cancelled events
+	//Description for cancelled events, etc.
 	private String data;
 	
 	//Variables used when the eventType is 'UPDATED'

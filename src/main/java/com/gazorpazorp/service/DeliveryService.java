@@ -239,10 +239,11 @@ public class DeliveryService {
 		Delivery delivery = deliveryRepo.findById(deliveryId)
 				.orElseThrow(() -> new Exception ("Delivery with ID " + deliveryId + " does not exist"));
 		delivery.setStatus(DeliveryStatus.DELIVERED);
-		if (orderService.completeOrder(delivery.getOrderId())) {	
-			deliveryRepo.save(delivery);
-			return true;
-		} 
+		orderService.addOrderEvent(new OrderEvent(OrderEventType.COMPLETED, delivery.getOrderId()), false);
+//		if (orderService.completeOrder(delivery.getOrderId())) {	
+//			deliveryRepo.save(delivery);
+//			return true;
+//		} 
 		return false;
 	}
 
@@ -266,4 +267,21 @@ public class DeliveryService {
 		}
 		return true;
 	}
+	
+	
+//	@Autowired
+//	DeliveryEventDispatcherService dispatcherService;
+//	@Transactional
+//	public void addDeliveryEvent(DeliveryEvent deliveryEvent, boolean validate) {
+//		Delivery delivery = deliveryRepo.getOne(deliveryEvent.getDeliveryId());
+//		if (validate) {
+//			try {
+//				validateDriverId (delivery.getDriverId());
+//			} catch (Exception e) {
+//				return;
+//			}
+//		}
+//		deliveryEvent = deliveryEventRepo.save(deliveryEvent);
+//		dispatcherService.dispatch(deliveryEvent, delivery.getId());
+//	}
 }

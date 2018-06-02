@@ -1,12 +1,11 @@
 package com.gazorpazorp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gazorpazorp.model.Customer;
+import com.gazorpazorp.model.Driver;
 import com.gazorpazorp.model.Order;
 import com.gazorpazorp.model.OrderEvent;
 import com.gazorpazorp.model.OrderEventType;
@@ -17,6 +16,8 @@ public class OrderEventDispatcherService {
 	
 	@Autowired
 	CustomerService customerService;
+	@Autowired
+	DriverService driverService;
 	@Autowired
 	PaymentService paymentService;
 	@Autowired
@@ -60,6 +61,12 @@ public class OrderEventDispatcherService {
 				break;
 			case COMPLETED:
 				//Capture the customer charge
+				Customer customer1 = customerService.getCustomerById(order.getCustomerId());
+//				Driver driver = driverService.getDriverById(deliveryService.getDeliveryByOrderId(orderId, false).getDriverId());
+//				if (driver != null) {
+					paymentService.captureCustomerOrder(customer1.getStripeId(), "acct_1BgRJJFpzQvyTNrz", order.getId(), order.getTotal()-200);
+//				} else
+//					System.out.println("CAN'T CAPTURE PAYMENT. NO DRIVER");
 				break;
 			case CANCELLED:
 				//Send cancel event to delivery
