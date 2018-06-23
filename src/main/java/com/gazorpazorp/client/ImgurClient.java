@@ -1,6 +1,6 @@
 package com.gazorpazorp.client;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,7 @@ import com.gazorpazorp.model.imgur.ImgurResp;
 
 import feign.Headers;
 import feign.Param;
+
 
 @FeignClient(name="imgur-client", url="https://api.imgur.com/3", configuration = ImgurTokenRequestPasswordConfiguration.class)
 public interface ImgurClient {

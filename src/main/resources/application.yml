@@ -54,6 +54,10 @@ security:
     password: admin
     role: ACTUATOR
   oauth2:
+#    client:
+#      client-id: LITCustomerClient
+#      client-secret: "{noop}LITSecret"
+#      authorized-grant-types: password
     resource:
       jwt:
         key-value: |
@@ -83,25 +87,25 @@ ribbon:
   ConnectionTimeout: 3000
   ReadTimeout: 10000
             
-management:
-  contextPath: /mgmt
-  security:
-    enabled: true
-    roles: ACTUATOR
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-    
-endpoints:
-  enabled: false
-  shutdown.enabled: true
-  health.enabled: true
-  info.enabled: true
-  logfile.enabled: true
-  loggers.enabled: true
-  metrics.enabled: true
-  trace.enabled: true
+#management:
+#  contextPath: /mgmt
+#  security:
+#    enabled: true
+#    roles: ACTUATOR
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#    
+#endpoints:
+#  enabled: false
+#  shutdown.enabled: true
+#  health.enabled: true
+#  info.enabled: true
+#  logfile.enabled: true
+#  loggers.enabled: true
+#  metrics.enabled: true
+#  trace.enabled: true
   
 lcbo-client:
   key: MDo1NDQwN2RjYy0wMDhkLTExZTctYWEwNy0yMzI4NjgxOTRjOWU6V2hSaDdoOXBVbjFjTU80cUtBZlpxRkI4UlJDVWcxRWlBUWZZ

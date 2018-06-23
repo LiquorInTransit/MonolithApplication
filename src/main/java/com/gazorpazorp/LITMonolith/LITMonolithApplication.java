@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,6 +20,8 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapt
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,15 +48,13 @@ import com.gazorpazorp.model.Product;
 import com.gazorpazorp.service.LITUserDetailsService;
 import com.gazorpazorp.service.ProductRepositoryCreationService;
 
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
-
 @EnableAsync
 @SpringBootApplication(scanBasePackages="com.gazorpazorp")
 @EnableJpaRepositories("com.gazorpazorp.repository")
 @EntityScan(basePackages="com.gazorpazorp")
 @EnableFeignClients("com.gazorpazorp.client")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableAdminServer
+//@EnableAdminServer
 public class LITMonolithApplication {
 	
 //	@PostConstruct
@@ -97,16 +97,25 @@ public class LITMonolithApplication {
 	
 	@Autowired
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+		auth.authenticationProvider(authProvider());
 	}
 	@Bean
+	@Primary
 	public PasswordEncoder passwordEncoder(){
-		return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder();//PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+	@Bean
+	public DaoAuthenticationProvider authProvider() {
+		final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
 	}
 
 	@Configuration
 	@EnableAuthorizationServer
-	protected static class OAuthConfig extends AuthorizationServerConfigurerAdapter {
+	protected class OAuthConfig extends AuthorizationServerConfigurerAdapter {
 
 		@Bean
 		protected JwtAccessTokenConverter accessTokenConverter() {
@@ -187,6 +196,8 @@ public class LITMonolithApplication {
 
 		@Autowired
 		LITUserDetailsService userDetailsService;
+		@Autowired
+		AuthenticationManager authenticationManager;
 		@Override
 		public void configure (AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
@@ -198,6 +209,7 @@ public class LITMonolithApplication {
 			//.accessTokenConverter(accessTokenConverter())
 			.tokenEnhancer(tokenEnhancerChain)
 			.exceptionTranslator(loggingExceptionTranslator())
+			.authenticationManager(authenticationManager)
 			/*.authenticationManager(authenticationManager)*/.userDetailsService(userDetailsService);
 		}		
 		
