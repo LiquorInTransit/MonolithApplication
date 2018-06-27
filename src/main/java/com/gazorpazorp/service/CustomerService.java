@@ -7,11 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.client.ImgurClient;
 import com.gazorpazorp.model.Customer;
+import com.gazorpazorp.model.UserPrincipal;
 import com.gazorpazorp.model.dto.CustomerInfoUpdateDto;
 import com.gazorpazorp.model.imgur.ImgurResp;
 import com.gazorpazorp.repository.CustomerRepository;
@@ -32,9 +36,15 @@ public class CustomerService {
 	private final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 	
 	public Customer getCurrentCustomer () {
-		Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+//		Map<String, Object> additionalInfo = getExtraInfo(SecurityContextHolder.getContext().getAuthentication());
+//		Long id = Long.parseLong(additionalInfo.get("userId").toString());//Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+		Long id = LITSecurityUtil.currentUser().getUserId();
 		Customer customer = customerRepo.findByUserId(id);
 		return customer;
+	}
+	public Map<String, Object> getExtraInfo (Authentication auth) {
+		OAuth2AuthenticationDetails oauthDetails = (OAuth2AuthenticationDetails) auth.getDetails();
+		return (Map<String, Object>) oauthDetails.getDecodedDetails();
 	}
 	
 	public Customer createCustomer (Customer customer, String email) {

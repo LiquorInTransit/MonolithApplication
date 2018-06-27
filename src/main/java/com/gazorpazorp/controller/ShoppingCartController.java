@@ -1,5 +1,6 @@
 package com.gazorpazorp.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +28,9 @@ public class ShoppingCartController {
 	ShoppingCartService shoppingCartService;
 	
 	@PostMapping
-	public ResponseEntity addCartEvent(@RequestBody ShoppingCartEvent cartEvent) throws Exception {
+	public ResponseEntity addCartEvent(@RequestBody ShoppingCartEvent cartEvent, Principal principal) throws Exception {
+		System.out.println(principal.getName());
 		assert cartEvent.getCartEventType() != ShoppingCartEventType.CHECKOUT; //CHECKOUT IS ONLY ALLOWED FROM THE CHECKOUT ENDPOINT
-		
 		return Optional.ofNullable(shoppingCartService.addCartEvent(cartEvent))
 				.map(event -> new ResponseEntity(HttpStatus.OK))
 				.orElseThrow(() -> new Exception("Could not find shopping cart"));
