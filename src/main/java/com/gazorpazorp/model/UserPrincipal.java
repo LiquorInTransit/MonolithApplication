@@ -34,11 +34,12 @@ public class UserPrincipal/* implements UserDetails*/ {
 //	private boolean accountNonExpired;
 //	private boolean accountNonLocked;
 	
-	public UserPrincipal (Long userId, Long customerId, String email) {
-		this.userId = userId;
-		this.customerId = customerId;
-		this.email = email;
-	}
+//	public UserPrincipal (Long userId, Long customerId, String email) {
+//		this.userId = userId;
+//		this.customerId = customerId;
+//		this.email = email;
+//	}
+	
 	
 //	public static UserPrincipal create (User user) {
 //		 List<GrantedAuthority> authorities = Arrays.asList(user.getRoles().split(",")).stream().map(role ->

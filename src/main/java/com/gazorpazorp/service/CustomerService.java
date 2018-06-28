@@ -38,8 +38,8 @@ public class CustomerService {
 	public Customer getCurrentCustomer () {
 //		Map<String, Object> additionalInfo = getExtraInfo(SecurityContextHolder.getContext().getAuthentication());
 //		Long id = Long.parseLong(additionalInfo.get("userId").toString());//Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-		Long id = LITSecurityUtil.currentUser().getUserId();
-		Customer customer = customerRepo.findByUserId(id);
+		Long id = LITSecurityUtil.currentUser().getCustomerId();
+		Customer customer = customerRepo.getOne(id);
 		return customer;
 	}
 	public Map<String, Object> getExtraInfo (Authentication auth) {

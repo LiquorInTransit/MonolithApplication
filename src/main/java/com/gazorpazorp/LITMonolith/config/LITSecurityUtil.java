@@ -1,6 +1,7 @@
 package com.gazorpazorp.LITMonolith.config;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +16,10 @@ public class LITSecurityUtil {
 	public static UserPrincipal currentUser() {
 		Map<String, Object> info = getInfo();
 		Long userId = Long.parseLong(String.valueOf(info.get("userId")));
-		Long customerId = Long.parseLong(String.valueOf(info.get("customerId")));
+		Long customerId =  Optional.ofNullable(info.get("customerId")).map(id -> Long.parseLong(String.valueOf(id))).orElse(null);
+		Long driverId = Optional.ofNullable(info.get("driverId")).map(id -> Long.parseLong(String.valueOf(id))).orElse(null);
 		String email = (String) info.get("user_name");
-		return new UserPrincipal(userId, customerId, email);
+		return new UserPrincipal(userId, customerId, driverId, email);
 	}
 
 	public static Map<String, Object> getInfo () {

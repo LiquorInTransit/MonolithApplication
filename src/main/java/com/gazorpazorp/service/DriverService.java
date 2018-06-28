@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.client.ImgurClient;
 import com.gazorpazorp.model.Driver;
 import com.gazorpazorp.model.dto.DriverInfoUpdateDto;
@@ -35,8 +36,8 @@ public class DriverService {
 	
 	//use the userClietn to get the user, adn put everything to gether into a CustomerMeDto
 	public Driver getCurrentDriver () {
-		Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-		return driverRepo.findByUserId(id);
+		Long id = LITSecurityUtil.currentUser().getDriverId();//Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+		return driverRepo.getOne(id);
 	}
 	public Driver getDriverById(Long id) {
 		return driverRepo.findById(id).orElse(null);
