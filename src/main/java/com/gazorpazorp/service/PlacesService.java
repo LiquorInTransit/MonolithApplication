@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.Location;
 import com.gazorpazorp.model.Place;
@@ -68,10 +69,10 @@ public class PlacesService {
 	
 	
 	private Long getCustomerId() throws Exception {
-		Customer customer = customerService.getCurrentCustomer();
-		if (customer == null)
+		Long id = LITSecurityUtil.currentUser().getCustomerId();
+		if (id == null)
 			throw new Exception("Customer does not exist.");
-		return customer.getId();
+		return id;
 	}	
 	//These locations must have SOMETHING in the address and city.
 	private boolean verifyLocation(Location location) {

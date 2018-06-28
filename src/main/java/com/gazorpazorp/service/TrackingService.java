@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.Delivery;
 import com.gazorpazorp.model.DeliveryTracking;
@@ -105,28 +106,28 @@ public class TrackingService {
 	}*/  
 	
 	public boolean verifyCustomer(Long deliveryId) throws Exception{
-		Customer customer = getCustomer();
+		Long customerId = getCustomerId();
 		Delivery delivery = getDelivery(deliveryId);
 		
-		if (delivery==null || customer==null)
+		if (delivery==null || customerId==null)
 			throw new Exception("Delivery or customer does not exist");
 		
-		return quoteService.getQuoteById(delivery.getQuoteId()).getCustomerId().equals(customer.getId());
+		return quoteService.getQuoteById(delivery.getQuoteId()).getCustomerId().equals(customerId);
 	}
 	public boolean verifyDriver(Long deliveryId) throws Exception {
-		Driver driver = getDriver();
+		Long driverId = getDriverId();
 		Delivery delivery = getDelivery(deliveryId);
 		
-		if (delivery == null || driver == null) 
+		if (delivery == null || driverId == null) 
 			throw new Exception("Delivery or driver does not exist");
 		
-		return delivery.getDriverId() == driver.getId();		
+		return delivery.getDriverId() == driverId;		
 	}
-	private Customer getCustomer() {
-		return customerService.getCurrentCustomer();
+	private Long getCustomerId() {
+		return LITSecurityUtil.currentUser().getCustomerId();//customerService.getCurrentCustomer();
 	}
-	private Driver getDriver() {
-		return driverService.getCurrentDriver();
+	private Long getDriverId() {
+		return LITSecurityUtil.currentUser().getDriverId();//driverService.getCurrentDriver();
 	}
 	private Delivery getDelivery(Long deliveryId) throws Exception {
 		Delivery delivery = deliveryService.getDeliveryById(deliveryId, false);

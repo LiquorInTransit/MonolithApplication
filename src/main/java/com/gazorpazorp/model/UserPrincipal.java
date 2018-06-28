@@ -1,22 +1,12 @@
 package com.gazorpazorp.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Getter
-@NoArgsConstructor
+@Value
 @AllArgsConstructor
 public class UserPrincipal/* implements UserDetails*/ {
 

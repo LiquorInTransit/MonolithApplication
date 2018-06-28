@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.Delivery;
 import com.gazorpazorp.model.DeliveryStatus;
@@ -155,8 +156,8 @@ public class DeliveryService {
 	}
 
 	public DeliveryWithItemsDto getDriverCurrentDelivery() throws Exception{
-		Driver driver = driverService.getCurrentDriver();
-		Delivery delivery = deliveryRepo.findByDriverIdAndStatusNotIn(driver.getId(), Arrays.asList(TERMINATING_DELIVERY_STATUSES));
+		Long driverId = LITSecurityUtil.currentUser().getDriverId();// driverService.getCurrentDriver();
+		Delivery delivery = deliveryRepo.findByDriverIdAndStatusNotIn(driverId, Arrays.asList(TERMINATING_DELIVERY_STATUSES));
 		if (delivery == null)
 			return null;
 		Order order = orderService.getOrderById(delivery.getOrderId(), false);
@@ -167,15 +168,15 @@ public class DeliveryService {
 	}
 
 	public Delivery findOpen() throws Exception {
-		Driver driver = driverService.getCurrentDriver();
+		Long driverId = LITSecurityUtil.currentUser().getDriverId();//driverService.getCurrentDriver();
 		if (getDriverCurrentDelivery() != null)
 			return null;
 		//		if ( !deliveryRepo.findByDriverId(driver.getId()).stream().filter(d -> DeliveryStatus.ACTIVE.equals(d.getStatus())).collect(Collectors.toList()).isEmpty())
 		//			return null;
-		List<Delivery> openDeliveries = deliveryRepo.findOpenDeliveries(driver.getId(), Arrays.asList(TERMINATING_DELIVERY_STATUSES));
+		List<Delivery> openDeliveries = deliveryRepo.findOpenDeliveries(driverId, Arrays.asList(TERMINATING_DELIVERY_STATUSES));
 		Delivery delivery = openDeliveries.isEmpty()?null:openDeliveries.get(0);
 		if (delivery != null) {
-			delivery.setDriverHold(driver.getId());
+			delivery.setDriverHold(driverId);
 			deliveryRepo.saveAndFlush(delivery);
 		}
 		return delivery;
@@ -224,8 +225,8 @@ public class DeliveryService {
 			throw new Exception("Delivery does not exist");
 		if (delivery.getDriverId()!=null)
 			throw new Exception("A driver is already assigned to this delivery");			
-		Driver driver = driverService.getCurrentDriver();
-		if (delivery.getDriverHold() != driver.getId())
+		Long driverId = LITSecurityUtil.currentUser().getDriverId();//driverService.getCurrentDriver();
+		if (delivery.getDriverHold() != driverId)
 			throw new Exception("You are not authorized to remove the hold from this order");
 
 		delivery.setDriverHold(null);
@@ -252,17 +253,18 @@ public class DeliveryService {
 
 
 	private boolean validateCustomerId(Long customerId) throws Exception {
-		Customer customer = customerService.getCurrentCustomer();
+//		Customer customer = customerService.getCurrentCustomer();
+		Long id = LITSecurityUtil.currentUser().getCustomerId();
 
-		if (customer != null && customer.getId() != customerId) {
+		if (id==null || (id != null && id != customerId)) {
 			throw new Exception ("Account number not valid");
 		}
 		return true;
 	}
 	private boolean validateDriverId(Long driverId) throws Exception {
-		Driver driver = driverService.getCurrentDriver();
+		Long id = LITSecurityUtil.currentUser().getDriverId();//driverService.getCurrentDriver();
 
-		if (driver == null || driver.getId() != driverId) {
+		if (id == null || id != driverId) {
 			throw new Exception ("Driver not valid");
 		}
 		return true;

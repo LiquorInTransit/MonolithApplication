@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.gazorpazorp.LITMonolith.config.LITSecurityUtil;
 import com.gazorpazorp.model.Customer;
 import com.gazorpazorp.model.Delivery;
 import com.gazorpazorp.model.Driver;
@@ -67,7 +68,7 @@ public class OrderService {
 	private static final OrderStatus[] TERMINATING_ORDER_STATUSES = {OrderStatus.COMPLETED, OrderStatus.CANCELLED};
 	
 	public List<Order> getAllOrdersForCustomer() {
-		Long customerId = customerService.getCurrentCustomer().getId();								//add the CANCELLED status to the valid types
+		Long customerId = LITSecurityUtil.currentUser().getCustomerId();//customerService.getCurrentCustomer().getId();								//add the CANCELLED status to the valid types
 //		return orderRepo.findByCustomerIdAndStatusInOrderByCreatedAtDesc(customerId, Arrays.asList(TERMINATING_ORDER_STATUSES));
 		List<Order> orders = orderRepo.findByCustomerIdOrderByCreatedAtDesc(customerId);
 		
@@ -117,7 +118,6 @@ public class OrderService {
 	}
 	
 	public OrderCurrentDto getCurrentOrder() {
-		Long customerId = customerService.getCurrentCustomer().getId();
 //		Order order = orderRepo.findByCustomerIdAndStatusNotIn(customerId, Arrays.asList(TERMINATING_ORDER_STATUSES));
 		Order order = getAllOrdersForCustomer().stream().filter(o -> !Arrays.asList(TERMINATING_ORDER_STATUSES).contains(o.getStatus())).findFirst().orElse(null);//orderRepo.findByCustomerId(customerId);
 		if (order==null)
@@ -143,7 +143,6 @@ public class OrderService {
 	
 	@Transactional(rollbackOn= {Exception.class} )
 	public boolean cancelCurrentOrder() throws Exception {
-		Long accountId = customerService.getCurrentCustomer().getId();
 //		Order order = orderRepo.findByCustomerIdAndStatusNotIn(accountId, Arrays.asList(TERMINATING_ORDER_STATUSES));
 		Order order = getAllOrdersForCustomer().stream().filter(o -> !Arrays.asList(TERMINATING_ORDER_STATUSES).contains(o.getStatus())).findFirst().orElse(null);//orderRepo.findByCustomerId(customerId);//orderRepo.findByCustomerId(accountId);
 		if (order == null)
@@ -225,9 +224,9 @@ public class OrderService {
 
 
 	private boolean validateCustomerId(Long customerId) throws Exception {
-		Customer customer = customerService.getCurrentCustomer();
+		Long id = LITSecurityUtil.currentUser().getCustomerId();//customerService.getCurrentCustomer();
 		
-		if (customer != null && customer.getId() != customerId) {
+		if (id==null||(id != null && id != customerId)) {
 			throw new Exception ("Account number not valid");
 		}
 		return true;
